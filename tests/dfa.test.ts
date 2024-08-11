@@ -18,7 +18,7 @@ describe("Modulo DFAs", () => {
         for (var count = 0; count < 100; count++){
             const word = 'a'.repeat(count);
 
-            expect(automata.runWordOnDFA(dfa, word)).toBe(count % 3 === 0);
+            expect(automata.isAcceptedByDFA(dfa, word)).toBe(count % 3 === 0);
         }
     });
 
@@ -35,7 +35,7 @@ describe("Modulo DFAs", () => {
         for (var count = 0; count < 100; count++){
             const word = 'a'.repeat(count);
 
-            expect(automata.runWordOnDFA(dfa, word)).toBe(count % 7 === 0);
+            expect(automata.isAcceptedByDFA(dfa, word)).toBe(count % 7 === 0);
         }
     });
 });
@@ -89,11 +89,11 @@ describe("Counting", () => {
 
         // accept
         ["000#1", "00#1", "10#2", "010#2", "110011001#2", "000111000111#1"]
-            .forEach(word => expect(automata.runWordOnDFA(dfa, word)).toBeTruthy());
+            .forEach(word => expect(automata.isAcceptedByDFA(dfa, word)).toBeTruthy());
 
         // reject
         ["", "#2", "11#2", "000#2", "11#", "00#01#2", "00001#1"]
-            .forEach(word => expect(automata.runWordOnDFA(dfa, word)).toBeFalsy());
+            .forEach(word => expect(automata.isAcceptedByDFA(dfa, word)).toBeFalsy());
     });
 
     it("should count different characters in a string up to 2", () => {
@@ -130,10 +130,10 @@ describe("Counting", () => {
 
         // acccept
         ["#0", "0#1", "1#1", "000#1", "11#1", "0001#2", "0001110001#2"]
-            .forEach(word => expect(automata.runWordOnDFA(dfa, word)).toBeTruthy());
+            .forEach(word => expect(automata.isAcceptedByDFA(dfa, word)).toBeTruthy());
 
         // reject
         ["", "#2", "1#0", "000#2", "11#0", "00#01#2", "00001#"]
-            .forEach(word => expect(automata.runWordOnDFA(dfa, word)).toBeFalsy());
+            .forEach(word => expect(automata.isAcceptedByDFA(dfa, word)).toBeFalsy());
     });
 });

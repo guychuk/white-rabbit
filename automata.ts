@@ -141,21 +141,19 @@ const isDetermenistic = (transitions: ATransition[]): boolean =>
             (innerCurr.src !== curr.src || innerCurr.read !== curr.read || innerCurr.dest === curr.dest),
             true), true);
 
-export const runWordOnDFA = (dfa: DFA, word: string) : boolean =>
+export const runWordOnDFA = (dfa: DFA, word: string, initState: AState = dfa.initialState) : AState | undefined =>
 {
     const arr = word.split('');
-
-    const dummy: AState = makeAState("dummy");
 
     if (!isSubArray(dfa.alphabet, arr))
         throw new Error("illegal characters in the word");
 
-    const s = arr.reduce((curr: AState, char, index) : AState => {
+    const s = arr.reduce((curr: AState | undefined, char, index) : AState | undefined => {
+        if (curr === undefined)
+            return undefined;
+
         if (index === arr.length)
             return curr;
-
-        if (curr == dummy)
-            return dummy;
 
         const next = dfa.transitions.filter(t => 
             sameState(t.src, curr) && t.read === char);
@@ -163,11 +161,18 @@ export const runWordOnDFA = (dfa: DFA, word: string) : boolean =>
         // this should result in an empty array or in an array of one element 
         // due to determinism
 
-        return next.length === 0 ? dummy : next[0].dest;
+        return next.length === 0 ? undefined : next[0].dest;
     }, dfa.initialState);
 
-    return dfa.acceptingStates.indexOf(s) > -1;
+    return s;
 }
+
+export const isAcceptedByDFA = (dfa: DFA, word: string) : boolean => {
+    const state = runWordOnDFA(dfa, word);
+
+    return state !== undefined && dfa.acceptingStates.indexOf(state) > -1;
+}
+
 
 export const runWordOnNFA = (nfa: NFA, word: string, initState: AState = nfa.initialState) : AState | undefined =>
     {
