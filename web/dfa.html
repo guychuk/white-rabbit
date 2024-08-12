@@ -27,19 +27,33 @@
         <table>
             <tr>
                 <td><b>Alphabet</b><sup class="must-provide">*</sup> (comma seperated):</td>
-                <td><input type="text" id="alphabet-in" placeholder="a, b, c, ..."></td>
+                <td>
+                    <textarea id="alphabet-in" cols="50" rows="1" placeholder="a, b, c, ..."></textarea>
+                </td>
             </tr>
             <tr>
                 <td><b>States</b><sup class="must-provide">*</sup> (comma seperated):</td>
-                <td><input type="text" id="states-in" placeholder="q0, q1, q2, ..."></td>
+                <td>
+                    <textarea id="states-in" cols="50" rows="1" placeholder="q0, q1, q2, ..."></textarea>
+                </td>
             </tr>
             <tr>
                 <td style="width: 32ch;"><b>Accepting States</b> (comma seperated):</td>
-                <td><input type="text" id="accepting-in" placeholder="q1, q2, ..."></td>
+                <td>
+                    <textarea id="accepting-in" cols="50" rows="1" placeholder="q1, q2, ..."></textarea>
+                </td>
             </tr>
             <tr>
                 <td><b>Initial State</b><sup class="must-provide">*</sup>:</td>
-                <td><input type="text" id="initial-in" placeholder="q0"></td>
+                <td>
+                    <textarea id="initial-in" cols="50" rows="1" placeholder="q0"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Transitions</b> (comma seperated within transition, transitions seperated by a slash):</td>
+                <td>
+                    <textarea id="transitions-in" cols="50" rows="5" placeholder="q0, a, q1 / q0, b, q2 / ..."></textarea>
+                </td>
             </tr>
         </table>
 
