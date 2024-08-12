@@ -1,4 +1,4 @@
-import { isSubArray, checkDuplicates } from "./helpers";
+import { isSubArray, checkDuplicates } from "./helpers.js";
 
 export type Character = string;
 
@@ -12,8 +12,7 @@ export type ATransition = {
     char: Character;
     dest: AState;
 };
-
-type AConfiguration = {
+export type AConfiguration = {
     tag: "AConfiguration";
     word: string;
     state: AState;
@@ -44,7 +43,7 @@ export const makeAState = (name: string): AState => ({ tag: "AState", name: name
 export const makeATransition = (src: AState, char: Character, dest: AState): ATransition =>
     ({ tag: "ATransition", src: src, char: char, dest: dest });
 
-const makeAConfiguration = (word: string, state: AState) : AConfiguration => 
+export const makeAConfiguration = (word: string, state: AState) : AConfiguration => 
     ({tag: "AConfiguration", word: word, state: state});
 
 export const makeDFA = (alphabet: Alphabet, states: AState[],
@@ -87,6 +86,8 @@ export const sameTransition = (ft: ATransition, st: ATransition) : boolean =>
 
 export const sameState = (fs: AState, ss: AState) : boolean => fs.name === ss.name;
 
+export const sameCharacter = (fc: Character, sc: Character) : boolean => fc === sc;
+
 /**
  * Check if the alphabet is a set, that the accepting and initial stets are in
  * the states list, and that the transitions are valid.
@@ -96,11 +97,14 @@ export const sameState = (fs: AState, ss: AState) : boolean => fs.name === ss.na
  * @param initialState the initial state of the automata.
  * @param transitions a list of transitions between the states of the automata.
  */
-const assertValidAutomata = (alphabet: Alphabet, states: AState[],
+export const assertValidAutomata = (alphabet: Alphabet, states: AState[],
     acceptingStates: AState[], initialState: AState,
     transitions: ATransition[], allowEpsilon: boolean = false) => {
         if (alphabet.length === 0)
             throw new Error("empty alphabet");
+        
+        if (alphabet.indexOf('') > -1)
+            throw new Error("empty character is not allowed");
 
         if (checkDuplicates(alphabet, (s1, s2) => s1 === s2))
             throw new Error("repeated characters in alphabet");
@@ -114,27 +118,27 @@ const assertValidAutomata = (alphabet: Alphabet, states: AState[],
         if (checkDuplicates(acceptingStates, sameState))
             throw new Error("repeated accepting states");
     
-        if (!isSubArray(states, acceptingStates))
+        if (!isSubArray(states, acceptingStates, sameState))
             throw new Error("accepting states is not a subset of all states");
     
-        if (states.indexOf(initialState) === -1)
+        if (states.findIndex(st => sameState(st, initialState)) === -1)
             throw new Error("initial state is not in the list of states");
     
         if (checkDuplicates(transitions, sameTransition))
             throw new Error("repeated transitions");
 
         if (allowEpsilon){
-            if (!isSubArray(alphabet.concat(['']), transitions.map(t => t.char)))
+            if (!isSubArray(alphabet.concat(['']), transitions.map(t => t.char), sameCharacter))
                 throw new Error("some transitions are from invalid characters");
         } else {
-            if (!isSubArray(alphabet, transitions.map(t => t.char)))
+            if (!isSubArray(alphabet, transitions.map(t => t.char), sameCharacter))
                 throw new Error("some transitions are from invalid characters");
         }
     
-        if (!isSubArray(states, transitions.map(t => t.src)))
+        if (!isSubArray(states, transitions.map(t => t.src), sameState))
             throw new Error("some sources are not in the list of states");
     
-        if (!isSubArray(states, transitions.map(t => t.dest)))
+        if (!isSubArray(states, transitions.map(t => t.dest), sameState))
             throw new Error("some destinations are not in the list of states");
     }
 
@@ -144,7 +148,7 @@ const assertValidAutomata = (alphabet: Alphabet, states: AState[],
  * @param transitions transition function.
  * @returns true if the list of transition is deterministic.
  */
-const isDetermenistic = (transitions: ATransition[]): boolean =>
+export const isDetermenistic = (transitions: ATransition[]): boolean =>
     transitions.reduce((acc: boolean, curr) =>
         acc && // haven't found non determinism
         transitions.reduce((innerAcc: boolean, innerCurr) =>
@@ -161,14 +165,17 @@ const isDetermenistic = (transitions: ATransition[]): boolean =>
  * @param initState a state to begin with, by default it's the DFA's initial state.
  * @returns The state on ehich the words stops/end, or undefined if it got stuck.
  */
-export const runWordOnDFA = (dfa: DFA, word: string, initState: AState = dfa.initialState) : AState | undefined =>
+export const runWordOnDFA = (dfa: DFA, word: string, print: boolean = false, initState: AState = dfa.initialState) : AState | undefined =>
 {
     const arr = word.split('');
 
-    if (!isSubArray(dfa.alphabet, arr))
+    if (!isSubArray(dfa.alphabet, arr, sameCharacter))
         throw new Error("illegal characters in the word");
 
     return arr.reduce((curr: AState | undefined, char, index) : AState | undefined => {
+        if (print)
+            console.log(`${curr?.name} ${word.slice(index)}`);
+
         if (curr === undefined || index === arr.length)
             return curr;
 
@@ -188,10 +195,19 @@ export const runWordOnDFA = (dfa: DFA, word: string, initState: AState = dfa.ini
  * @param word a word to test on the DFA.
  * @returns true iff the word is accepted in the DFA, false otherwise.
  */
-export const isAcceptedByDFA = (dfa: DFA, word: string) : boolean => {
-    const state = runWordOnDFA(dfa, word);
+export const isAcceptedByDFA = (dfa: DFA, word: string, print: boolean = false) : boolean => {
+    const state = runWordOnDFA(dfa, word, print);
 
-    return state !== undefined && dfa.acceptingStates.indexOf(state) > -1;
+    if (state !== undefined && dfa.acceptingStates.findIndex(st => sameState(st, state)) > -1){
+        if (print)
+            console.log("ACCEPTED");
+        return true;
+    }
+
+    if (print)
+        console.log("REJECTED");
+
+    return false;
 }
 
 /**
@@ -201,14 +217,18 @@ export const isAcceptedByDFA = (dfa: DFA, word: string) : boolean => {
  * @param initState a state to begin with, by default it's the NFA's initial state.
  * @returns The state on ehich the words stops/end, or undefined if it got stuck.
  */
-export const runWordOnNFA = (nfa: NFA, word: string, initState: AState = nfa.initialState, pastConfigurations: AConfiguration[] = []) : AState | undefined =>
+export const runWordOnNFA = (nfa: NFA, word: string, print: boolean = false, initState: AState = nfa.initialState, pastConfigurations: AConfiguration[] = []) : AState | undefined =>
     {
-        if (word.length === 0 && (nfa.acceptingStates.indexOf(initState) > -1))
+        if (word.length === 0 && (nfa.acceptingStates.findIndex(st => sameState(st, initState)) > -1)){
+            if (print)
+                console.log(`${initState.name} ${word}`);
+
             return initState;
+        }
 
         const chars = word.split('');
         
-        if (!isSubArray(nfa.alphabet, chars))
+        if (!isSubArray(nfa.alphabet, chars, sameCharacter))
             throw new Error("illegal characters in the word");
 
         const nextStates = nfa.transitions
@@ -216,12 +236,16 @@ export const runWordOnNFA = (nfa: NFA, word: string, initState: AState = nfa.ini
 
         const nonEpsilon = nextStates.reduce((end: AState | undefined, curr: ATransition) => {
             // try each one if the previous weren't successful
-            if (end === undefined || nfa.acceptingStates.indexOf(end) === -1)
-                return runWordOnNFA(nfa, word.slice(1), curr.dest, [makeAConfiguration(word, curr.src)]);
+            if (end === undefined || nfa.acceptingStates.findIndex(st => sameState(st, end)) === -1){
+                if (print)
+                    console.log(`${curr?.src.name} ${word}`);
+
+                return runWordOnNFA(nfa, word.slice(1), print, curr.dest, [makeAConfiguration(word, curr.src)]);
+            }
             return end;
         }, undefined);
 
-        if (nonEpsilon !== undefined && nfa.acceptingStates.indexOf(nonEpsilon) > -1)
+        if (nonEpsilon !== undefined && nfa.acceptingStates.findIndex(st => sameState(st, nonEpsilon)) > -1)
             return nonEpsilon;
 
         const nextStatesEpsilon = nfa.transitions
@@ -233,12 +257,17 @@ export const runWordOnNFA = (nfa: NFA, word: string, initState: AState = nfa.ini
                 return undefined;
 
             // try each one if the previous weren't successful
-            if (end === undefined || nfa.acceptingStates.indexOf(end) === -1)
-                return runWordOnNFA(nfa, word, curr.dest, pastConfigurations.concat([makeAConfiguration(word, curr.src)]));
+            if (end === undefined || nfa.acceptingStates.findIndex(st => sameState(st, end)) === -1){
+                if (print)
+                    console.log(`${curr.src.name} ${word}`);
+
+                return runWordOnNFA(nfa, word, print, curr.dest, pastConfigurations.concat([makeAConfiguration(word, curr.src)]));
+            }
+
 
             return end;
         }, undefined);
-        
+
         return epsilon;
     }
 
@@ -248,8 +277,17 @@ export const runWordOnNFA = (nfa: NFA, word: string, initState: AState = nfa.ini
  * @param word a word to test on the NFA.
  * @returns true iff the word is accepted in the NFA, false otherwise.
  */
-export const isAcceptedByNFA = (nfa: NFA, word: string) : boolean => {
-    const state = runWordOnNFA(nfa, word);
+export const isAcceptedByNFA = (nfa: NFA, word: string, print: boolean = false) : boolean => {
+    const state = runWordOnNFA(nfa, word, print);
 
-    return state !== undefined && nfa.acceptingStates.indexOf(state) > -1;
+    if (state !== undefined && nfa.acceptingStates.findIndex(st => sameState(st, state)) > -1){
+        if (print)
+            console.log("ACCEPTED");
+        return true;
+    }
+
+    if (print)
+        console.log("REJECTED");
+
+    return false;
 }

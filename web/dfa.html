@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DFA Simulator</title>
+        <style>
+            body {
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .must-provide {
+                color:crimson;
+            }
+
+            .dfa {
+                font-family: 'Courier New', Courier, monospace;
+            }
+
+            .error {
+                color: red;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>DFA Simulator</h1>
+
+        <table>
+            <tr>
+                <td><b>Alphabet</b><sup class="must-provide">*</sup> (comma seperated):</td>
+                <td><input type="text" id="alphabet-in" placeholder="a, b, c, ..."></td>
+            </tr>
+            <tr>
+                <td><b>States</b><sup class="must-provide">*</sup> (comma seperated):</td>
+                <td><input type="text" id="states-in" placeholder="q0, q1, q2, ..."></td>
+            </tr>
+            <tr>
+                <td style="width: 32ch;"><b>Accepting States</b> (comma seperated):</td>
+                <td><input type="text" id="accepting-in" placeholder="q1, q2, ..."></td>
+            </tr>
+            <tr>
+                <td><b>Initial State</b><sup class="must-provide">*</sup>:</td>
+                <td><input type="text" id="initial-in" placeholder="q0"></td>
+            </tr>
+        </table>
+
+        <br>
+
+        <button id="submit-button">Submit</button>
+
+        <!-- for testing -->
+        <h3>DFA:</h3>
+        <output id="error-out" class="error"></output>
+        <output id="dfa-out" class="dfa"></output>
+
+        <script>var exports = {};</script>
+
+        <script type="module" src="dfa.js"></script>
+    </body>
+</html>

@@ -14,7 +14,7 @@ describe("DFA Test", () => {
                 at.makeATransition(states[2], "1", states[1])
             ]
             const alphabet = at.makeAlphabet("01");
-            const dfa = at.makeDFA(alphabet, states, [states[2]], states[0], transitions);
+            const dfa = at.makeDFA(alphabet, states, [at.makeAState("q2")], states[0], transitions);
 
             expect(at.isAcceptedByDFA(dfa, "")).toBeFalsy();
             expect(at.isAcceptedByDFA(dfa, "0")).toBeFalsy();
