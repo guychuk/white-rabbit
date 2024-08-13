@@ -291,3 +291,6 @@ export const isAcceptedByNFA = (nfa: NFA, word: string, print: boolean = false) 
 
     return false;
 }
+
+export const isAcceptingState = (fa: DFA | NFA, state: AState) : boolean =>
+    fa.acceptingStates.findIndex(s => sameState(s, state)) > -1;

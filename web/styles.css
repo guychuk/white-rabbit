@@ -1,0 +1,64 @@
+body {
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+}
+
+.must-provide {
+    color:crimson;
+}
+
+.submit-button {
+    background-color:lightsteelblue;
+
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size:large;
+    border-width: 1.5px;
+}
+
+.submit-button:active {
+    background-color: lightslategrey;
+}
+
+.textboxes {
+    font-family:'Courier New', Courier, monospace;
+}
+
+.hints {
+    font-size: small;
+}
+
+.container {
+    display: flex;
+    height: auto;
+    width: 100%;
+}
+
+.left-section {
+    flex: 0 0 80ch;
+    padding: 10px;
+    box-sizing: border-box; /* ? */
+}
+
+.right-section {
+    flex: 1 1 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow: hidden; /* ? */
+}
+
+.dfa-out {
+    font-family: 'Courier New', Courier, monospace;
+    max-width: 100%; /* Use 100% of parent's width */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.error {
+    color:brown;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#dfa-canv {
+    width: 1000px;
+    height: 800px;
+}
