@@ -17,7 +17,12 @@ const ELEVATION = 30;
  * @param state the state.
  * @param dfa the entire dfa.
  */
-function drawState(ctx: CanvasRenderingContext2D, x: number, y: number, state: AState, fa: DFA | NFA): void {
+function drawState(ctx: CanvasRenderingContext2D, color: string, x: number, y: number, state: AState, fa: DFA | NFA): void {
+    ctx.save();
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    
     // draw the outer circle
     ctx.beginPath();
     ctx.arc(x, y, OUT_RAD, 0, 2 * Math.PI);
@@ -35,6 +40,8 @@ function drawState(ctx: CanvasRenderingContext2D, x: number, y: number, state: A
         ctx.arc(x, y, IN_RAD, 0, 2 * Math.PI);
         ctx.stroke();
     }
+
+    ctx.restore();
 
     if (sameState(state, fa.initialState)) {
         // draw an arrow above the outer circle
@@ -183,6 +190,20 @@ function drawTransition(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
     ctx.restore(); 
 }
 
+function calculatePositionOfState(canvas: HTMLCanvasElement, state: AState, allStates: AState[]){
+    const centerX = canvas.width / 2, centerY = canvas.height / 2;
+    const rotationPerState = (2 * Math.PI) / allStates.length;
+    const margin = OUT_RAD + TRANSITION_CHAR_PAD + 2 * SELF_LOOP_RAD + 30;
+    const radius = Math.min(canvas.width, canvas.height) / 2 - margin;
+    const index = allStates.findIndex(t => sameState(t, state));
+
+    return {
+        state: state,
+        x: centerX + radius * Math.cos(index * rotationPerState),
+        y: centerY + radius * Math.sin(index * rotationPerState)
+    };
+}
+
 /**
  * calculate the position of each state's circle in the canvas.
  * @param canvas the canvas.
@@ -192,7 +213,6 @@ function drawTransition(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
 function calculatePositions(canvas: HTMLCanvasElement, states: AState[]) {
     const centerX = canvas.width / 2, centerY = canvas.height / 2;
     const rotationPerState = (2 * Math.PI) / states.length;
-    // const margin = 2 * (OUT_RAD + SELF_LOOP_RAD + TRANSITION_CHAR_PAD);
     const margin = OUT_RAD + TRANSITION_CHAR_PAD + 2 * SELF_LOOP_RAD + 30;
     const radius = Math.min(canvas.width, canvas.height) / 2 - margin;
 
@@ -213,7 +233,7 @@ export function drawAutomata(fa: DFA | NFA, canvas: HTMLCanvasElement, ctx: Canv
 
     const sameEnds = (f: ATransition, s: ATransition): boolean => sameState(f.src, s.src) && sameState(f.dest, s.dest);
 
-    positions.forEach(stateP => drawState(ctx, stateP.x, stateP.y, stateP.state, fa));
+    positions.forEach(stateP => drawState(ctx, "black", stateP.x, stateP.y, stateP.state, fa));
 
     var combinedList = [];
 
@@ -249,4 +269,10 @@ export function drawAutomata(fa: DFA | NFA, canvas: HTMLCanvasElement, ctx: Canv
             positions[end].x, positions[end].y,
             transiton.char);
     });
+}
+
+export function colorState(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, color: string, state: AState, fa: DFA | NFA){
+    const pos = calculatePositionOfState(canvas, state, fa.states);
+
+    drawState(ctx, color, pos.x, pos.y, state, fa);
 }

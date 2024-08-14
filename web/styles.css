@@ -19,14 +19,15 @@ body {
 
 #run-button:active {
     background-color:goldenrod;
+    font-weight: bold;
 }
 
-#step-button {
-    background-color:gold;
+#randword-button {
+    background-color:darkseagreen;
 }
 
-#step-button:active {
-    background-color:goldenrod;
+#randword-button:active {
+    background-color:cadetblue;
 }
 
 #submit-button {
@@ -36,6 +37,7 @@ body {
 
 #submit-button:active {
     background-color: lightslategrey;
+    font-weight: bold;
 }
 
 #random-button {
@@ -78,7 +80,7 @@ body {
 }
 
 .error {
-    color:brown;
+    color:crimson;
     font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
 }

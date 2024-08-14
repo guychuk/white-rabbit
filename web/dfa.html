@@ -47,21 +47,22 @@
                     <tr>
                         <td><b>Input</b>:</td>
                         <td>
-                            <textarea class="textboxes" id="transitions-in" cols="50" rows="1" placeholder="supercalifragilisticexpialidocious"></textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width: 40ch; height: 5ch;">
-                            <output id="error-out" class="error"></output>
-                        </td>
-                        <td style="text-align: right;">
-                            <button id="step-button" class="button">Next tep</button>
-                            <button id="run-button" class="button">Run</button>
-                            <button id="random-button" class="button">Random DFA</button>
-                            <button id="submit-button" class="button">Submit DFA</button>    
+                            <textarea class="textboxes" id="input-in" cols="50" rows="1" placeholder="supercalifragilisticexpialidocious"></textarea>
                         </td>
                     </tr>
                 </table>
+
+                <output id="error-out" class="error"></output>
+
+                <h2>Actions</h2>
+                <button id="randword-button" class="button">Random Input</button>
+                <button id="run-button" class="button">Run</button>
+                <button id="random-button" class="button">Random DFA</button>
+                <button id="submit-button" class="button">Submit DFA</button> 
+
+                <h2>Settings</h2>
+                <b>Step Duration (ms):</b><br>
+                <input id="delay" type="number" value="1000"></input><br>                
             </div>
             <div class="right-section">
                 <canvas id="dfa-canv" width="1000" height="800"></canvas>

@@ -198,7 +198,7 @@ export const runWordOnDFA = (dfa: DFA, word: string, print: boolean = false, ini
 export const isAcceptedByDFA = (dfa: DFA, word: string, print: boolean = false) : boolean => {
     const state = runWordOnDFA(dfa, word, print);
 
-    if (state !== undefined && dfa.acceptingStates.findIndex(st => sameState(st, state)) > -1){
+    if (state !== undefined && isAcceptingState(dfa, state)){
         if (print)
             console.log("ACCEPTED");
         return true;
@@ -280,7 +280,7 @@ export const runWordOnNFA = (nfa: NFA, word: string, print: boolean = false, ini
 export const isAcceptedByNFA = (nfa: NFA, word: string, print: boolean = false) : boolean => {
     const state = runWordOnNFA(nfa, word, print);
 
-    if (state !== undefined && nfa.acceptingStates.findIndex(st => sameState(st, state)) > -1){
+    if (state !== undefined && isAcceptingState(nfa, state)){
         if (print)
             console.log("ACCEPTED");
         return true;
