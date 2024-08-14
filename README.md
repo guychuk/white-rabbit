@@ -7,4 +7,4 @@ I'm planing to mess around with some ideas I picked up this year and maybe even 
 It is also a great song! [#🛩️](https://www.youtube.com/watch?v=pnJM_jC7j_4)
 ## 🔎 What Will You Find Here?
 So far, I've got  
-- automata.ts: **DFA** (Deterministic Finite Automata) and **NFA** (Nondeterministic Finite Automata) - abillity to create and check if words are accepted.
+- automata.ts: **DFA** (Deterministic Finite Automata) and **NFA** (Nondeterministic Finite Automata) - ability to create and check if words are accepted (programmatically), a page where you can draw a DFA or generate a random one (cannot visualize running words on it, *yet*).
