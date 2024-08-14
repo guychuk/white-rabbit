@@ -6,27 +6,48 @@ body {
     color:crimson;
 }
 
-.submit-button {
-    background-color:lightsteelblue;
+.button {
     font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size:large;
-    font-weight: bold;
     border-width: 1.5px;
 }
 
-.submit-button:active {
+#run-button {
+    background-color:gold;
+    font-weight: bold;
+}
+
+#run-button:active {
+    background-color:goldenrod;
+}
+
+#step-button {
+    background-color:gold;
+}
+
+#step-button:active {
+    background-color:goldenrod;
+}
+
+#submit-button {
+    background-color:lightsteelblue;
+    font-weight: bold;
+}
+
+#submit-button:active {
     background-color: lightslategrey;
 }
 
-.random-button {
+#random-button {
     background-color:pink;
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-size:large;
-    border-width: 1.5px;
 }
 
-.random-button:active {
+#random-button:active {
     background-color:plum;
+}
+
+#control {
+    align-content: center;
 }
 
 .textboxes {
@@ -59,9 +80,14 @@ body {
 .error {
     color:brown;
     font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
 }
 
 #dfa-canv {
     width: 1000px;
     height: 800px;
+}
+
+.control {
+    text-align: right;
 }

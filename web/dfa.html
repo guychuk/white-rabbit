@@ -44,15 +44,24 @@
                             <textarea class="textboxes" id="transitions-in" cols="50" rows="5" placeholder="q0, a, q1 / q0, b, q2 / ..."></textarea>
                         </td>
                     </tr>
+                    <tr>
+                        <td><b>Input</b>:</td>
+                        <td>
+                            <textarea class="textboxes" id="transitions-in" cols="50" rows="1" placeholder="supercalifragilisticexpialidocious"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 40ch; height: 5ch;">
+                            <output id="error-out" class="error"></output>
+                        </td>
+                        <td style="text-align: right;">
+                            <button id="step-button" class="button">Next tep</button>
+                            <button id="run-button" class="button">Run</button>
+                            <button id="random-button" class="button">Random DFA</button>
+                            <button id="submit-button" class="button">Submit DFA</button>    
+                        </td>
+                    </tr>
                 </table>
-        
-                <br>
-        
-                <button id="submit-button" class="submit-button">Submit</button>
-                <button id="random-button" class="random-button">Random DFA</button>
-        
-                <!-- for testing -->
-                <output id="error-out" class="error"></output>
             </div>
             <div class="right-section">
                 <canvas id="dfa-canv" width="1000" height="800"></canvas>
