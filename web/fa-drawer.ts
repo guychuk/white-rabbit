@@ -236,18 +236,6 @@ export function drawAutomata(fa: DFA | NFA, canvas: HTMLCanvasElement, ctx: Canv
         // push the combined one
         combinedList.push(combinedTransition);
     }
-    // fa.transitions.forEach(transiton => {
-    //     const origin = positions.findIndex(pos => sameState(pos.state, transiton.src));
-    //     const end = positions.findIndex(pos => sameState(pos.state, transiton.dest));
-
-    //     if (origin === -1 || end === -1)
-    //         throw new Error("invalid transitions")  // shouldn't happen
-
-    //     drawTransition(canvas, ctx,
-    //         positions[origin].x, positions[origin].y,
-    //         positions[end].x, positions[end].y,
-    //         transiton.char);
-    // });
 
     combinedList.forEach(transiton => {
         const origin = positions.findIndex(pos => sameState(pos.state, transiton.src));
