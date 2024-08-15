@@ -13,7 +13,7 @@ const delayIN = document.getElementById("delay") as HTMLInputElement;
 const canvas = document.getElementById("dfa-canv") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-const acceptedColor = "green", rejectedColor = "red", midColor = "#A9A9A9";
+const acceptedColor = "green", rejectedColor = "red", midColor = "blue";
 
 const clearCanvas = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
 

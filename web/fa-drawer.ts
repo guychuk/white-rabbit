@@ -185,7 +185,16 @@ function drawTransition(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
         ctx.rotate(angle);
 
     ctx.font = TRANSITION_FONT;
-    ctx.fillText(char === '' ? 'ε' : char, 0, 0); 
+
+    if (endX > startX)
+        ctx.fillText((char === '' ? 'ε' : char) + " →", 0, 0); 
+    else if (endX < startX)
+        ctx.fillText("← " + (char === '' ? 'ε' : char), 0, 0); 
+    else if (endY > startY) 
+        // same x but the arrow is at the bottom end of the transition arrow
+        ctx.fillText((char === '' ? 'ε' : char) + " →", 0, 0); 
+    else 
+        ctx.fillText("← " + (char === '' ? 'ε' : char), 0, 0); 
 
     ctx.restore(); 
 }
