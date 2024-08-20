@@ -219,7 +219,7 @@ export const isAcceptedByDFA = (dfa: DFA, word: string, print: boolean = false) 
  */
 export const runWordOnNFA = (nfa: NFA, word: string, print: boolean = false, initState: AState = nfa.initialState, pastConfigurations: AConfiguration[] = []) : AState | undefined =>
     {
-        if (word.length === 0 && (nfa.acceptingStates.findIndex(st => sameState(st, initState)) > -1)){
+        if (word.length === 0 && isAcceptingState(nfa, initState)){
             if (print)
                 console.log(`${initState.name} ${word}`);
 
@@ -294,3 +294,57 @@ export const isAcceptedByNFA = (nfa: NFA, word: string, print: boolean = false) 
 
 export const isAcceptingState = (fa: DFA | NFA, state: AState) : boolean =>
     fa.acceptingStates.findIndex(s => sameState(s, state)) > -1;
+
+export const getPathOnNFA = (nfa: NFA, word: string, initState: AState = nfa.initialState, pastConfigurations: AConfiguration[] = []) : AState[] =>
+    {
+        // empty word in an accepting state - just accept
+        if (word.length === 0 && isAcceptingState(nfa, initState))
+            return [initState];
+
+        // check word validity
+
+        const chars = word.split('');
+        
+        if (!isSubArray(nfa.alphabet, chars, sameCharacter))
+            throw new Error("illegal characters in the word");
+
+        // next states that are accessible via a non-epsilon transition
+
+        const nextStates = nfa.transitions
+            .filter(t => sameState(initState, t.src) && word[0] === t.char);
+
+        const nonEpsilon = nextStates.reduce((path: AState[], curr: ATransition) => {
+            // try each one if the previous weren't successful
+
+            // last path was empty or ended in a non-accepting state
+            if (path.length === 0 || !isAcceptingState(nfa, path[path.length - 1]))
+                // create a list starting in this path and continues in the run on the rest of the word
+                return [curr.src].concat(getPathOnNFA(nfa, word.slice(1), curr.dest, [makeAConfiguration(word, curr.src)]));
+            
+            // the path is accepting so no need to search anymore
+            return path;
+        }, []);
+
+        // if the overall path is accepting, stop
+        if (nonEpsilon.length > 0 && isAcceptingState(nfa, nonEpsilon[nonEpsilon.length - 1]))
+            return nonEpsilon;
+
+        // else try epsilon transitions
+
+        const nextStatesEpsilon = nfa.transitions
+            .filter(t => sameState(initState, t.src) && t.char === '');
+
+        const epsilon = nextStatesEpsilon.reduce((path: AState[], curr: ATransition) => {
+            // detected a loop
+            if (pastConfigurations.filter(c => c.word === word && c.state === curr.src).length > 0)
+                return [];
+
+            // try each one if the previous weren't successful
+            if (path.length === 0 || !isAcceptingState(nfa, path[path.length - 1]))
+                return [curr.src].concat(getPathOnNFA(nfa, word, curr.dest, pastConfigurations.concat([makeAConfiguration(word, curr.src)])));
+
+            return path;
+        }, []);
+
+        return epsilon;
+    }

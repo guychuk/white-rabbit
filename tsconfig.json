@@ -16,8 +16,7 @@
     "strict": true                                    
   },
   "include": [
-    "web/**/*.ts",
-    "typescript/**/*.ts"
+    "**/*.ts", "**/*.js"
   ],
   "exclude": [
     "typescript/tests",
