@@ -1,15 +1,19 @@
 {
     "compilerOptions": {
-        "target": "ES6",
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Node",
         "outDir": "./dist",
-        "sourceMap": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "strictPropertyInitialization": false,
-        "types": ["jest", "node"]
+        "esModuleInterop": true,
+        "allowJs": true,
+        "types": ["jest", "node"],
     },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist"]
+    "include": [
+        "./src",
+        "./public/scripts"
+    ],
+    "exclude": ["node_modules"]
 }

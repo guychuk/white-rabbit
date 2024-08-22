@@ -148,7 +148,7 @@ describe("DFA Test", () => {
 describe("NFA Test", () => {
     describe("Valid NFAs", () => {
         describe("No epsilon transitions", () => {
-            // DFAs from https://www.javatpoint.com/examples-of-non-deterministic-finite-automata
+            // NFAs from https://www.javatpoint.com/examples-of-non-deterministic-finite-automata
 
             it ("should accept all string ending with 01", () => {
                 const automaton = NFA.create("01", ["q0", "q1", "q2"], ["q2"], "q0", [
@@ -188,7 +188,7 @@ describe("NFA Test", () => {
                 expect(automaton.acceptsWord("11")).toBeFalsy();
                 expect(automaton.acceptsWord("100")).toBeFalsy();
                 expect(automaton.acceptsWord("110")).toBeFalsy();
-                expect(automaton.acceptsWord("1100")).toBeTruthy(); // TODO: FIX
+                expect(automaton.acceptsWord("1100")).toBeTruthy();
                 expect(automaton.acceptsWord("110011")).toBeTruthy();
                 expect(automaton.acceptsWord("11001100")).toBeTruthy();
                 expect(automaton.acceptsWord("01100011")).toBeTruthy();
@@ -215,7 +215,7 @@ describe("NFA Test", () => {
                 expect(automaton.acceptsWord("11")).toBeFalsy();
                 expect(automaton.acceptsWord("111")).toBeFalsy();
                 expect(automaton.acceptsWord("1000")).toBeFalsy();
-                expect(automaton.acceptsWord("1110")).toBeTruthy(); // TODO: FIX
+                expect(automaton.acceptsWord("1110")).toBeTruthy();
                 expect(automaton.acceptsWord("101110")).toBeTruthy();
                 expect(automaton.acceptsWord("1011")).toBeFalsy();
                 expect(automaton.acceptsWord("1100")).toBeFalsy();
@@ -238,7 +238,7 @@ describe("NFA Test", () => {
                 expect(automaton.acceptsWord("0")).toBeFalsy();
                 expect(automaton.acceptsWord("10")).toBeFalsy();
                 expect(automaton.acceptsWord("100")).toBeFalsy();
-                expect(automaton.acceptsWord("1000")).toBeTruthy(); // TODO: FIX
+                expect(automaton.acceptsWord("1000")).toBeTruthy();
                 expect(automaton.acceptsWord("1001")).toBeTruthy();
                 expect(automaton.acceptsWord("1010")).toBeTruthy();
                 expect(automaton.acceptsWord("1011")).toBeTruthy();
@@ -283,7 +283,7 @@ describe("NFA Test", () => {
                 ]);
 
                 expect(automaton.acceptsWord("")).toBeFalsy();
-                expect(automaton.acceptsWord("a")).toBeTruthy();    // TODO: FIX
+                expect(automaton.acceptsWord("a")).toBeTruthy();
                 expect(automaton.acceptsWord("aa")).toBeTruthy();
                 expect(automaton.acceptsWord("aaa")).toBeTruthy();
                 expect(automaton.acceptsWord("aaaa")).toBeTruthy();

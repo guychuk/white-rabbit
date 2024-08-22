@@ -8,7 +8,7 @@ export const makeConfiguration = (state: string, word: string[]) : Configuration
 
 export class NFA {
     alphabet: Set<string>;
-    states: Set<string>;    // a set if states names
+    states: Set<string>;    // a set of states names
     acceptingStates: Set<string>;
     initialState: string;
     transitions: Map<string, Map<string, Set<string>>>; // state -> (char -> next states)
