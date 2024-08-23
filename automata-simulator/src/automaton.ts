@@ -23,8 +23,17 @@ export class NFA {
         this.initialState = initialState;
         this.transitions = transitions;
 
+
+        if (this.alphabet.size === 0){
+            throw new Error("the alphabet must not be empty");
+        }
+
         if (this.isDeterministic() && alphabet.has('')){
             throw new Error("epsilon transitions are not allowed in a DFA");
+        }
+
+        if (this.states.size === 0){
+            throw new Error("the set of states must not be empty");
         }
 
         if (!isSubset(acceptigStates, states)) {
@@ -41,7 +50,7 @@ export class NFA {
     }
 
     static create(alphabet: string | string[], states: string[], acceptigStates: string[], initialState: string, transitions: string[][]){
-        var transitionsMap = new Map<string, Map<string, Set<string>>>();
+        var transitionsMap = new Map<string, Map<string, Set<string>>>(); 
 
         for (let transition of transitions){
             if (transition.length != 3){
@@ -80,7 +89,7 @@ export class NFA {
         var result = it.next();
 
         while(!result.done) { 
-            var result = it.next();
+            result = it.next();
         }
 
         const val: Set<Configuration> = result.value;

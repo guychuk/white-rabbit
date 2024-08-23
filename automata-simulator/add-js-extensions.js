@@ -13,7 +13,7 @@ const addJsExtensions = dir => {
 
             let content = fs.readFileSync(filePath, 'utf8');
 
-            content = content.replace(/(import\s.*from\s+['"].*?)(['"])/g, '$1.js$2');
+            content = content.replace(/(import\s.*from\s+['"]\.\.?\/.*?)(['"])/g, '$1.js$2');
 
             fs.writeFileSync(filePath, content, 'utf8');
         }

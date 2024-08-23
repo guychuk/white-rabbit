@@ -17,51 +17,49 @@
                         <td><b>Alphabet:</b><sup class="must-provide">*</sup><br>
                             <span class="hints">(comma seperated)</span></td>
                         <td>
-                            <textarea class="textboxes" id="alphabet-in" cols="50" rows="2" placeholder="a, b, c, ..."></textarea>
+                            <textarea class="textboxes" id="alphabet" cols="50" rows="2" placeholder="a, b, c, ..."></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td><b>States:</b><sup class="must-provide">*</sup><br>
                             <span class="hints">(comma seperated)</span></td>
                         <td>
-                            <textarea class="textboxes" id="states-in" cols="50" rows="2" placeholder="q0, q1, q2, ..."></textarea>
+                            <textarea class="textboxes" id="states" cols="50" rows="2" placeholder="q0, q1, q2, ..."></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td style="width: 32ch;"><b>Accepting States:</b><br>
                             <span class="hints">(comma seperated)</span></td>
                         <td>
-                            <textarea class="textboxes" id="accepting-in" cols="50" rows="2" placeholder="q1, q2, ..."></textarea>
+                            <textarea class="textboxes" id="acceptingStates" cols="50" rows="2" placeholder="q1, q2, ..."></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td><b>Initial State</b><sup class="must-provide">*</sup>:</td>
                         <td>
-                            <textarea class="textboxes" id="initial-in" cols="50" rows="1" placeholder="q0"></textarea>
+                            <textarea class="textboxes" id="initialState" cols="50" rows="1" placeholder="q0"></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td><b>Transitions:</b> <br> 
                             <span class="hints">(seperated within transition, transitions seperated by a slash)</span></td>
                         <td>
-                            <textarea class="textboxes" id="transitions-in" cols="50" rows="5" placeholder="q0, a, q1 / q0, b, q2 / ..."></textarea>
+                            <textarea class="textboxes" id="transitions" cols="50" rows="5" placeholder="q0, a, q1 / q0, b, q2 / ..."></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td><b>Input</b>:</td>
                         <td>
-                            <textarea class="textboxes" id="input-in" cols="50" rows="1" placeholder="supercalifragilisticexpialidocious"></textarea>
+                            <textarea class="textboxes" id="word" cols="50" rows="1" placeholder="supercalifragilisticexpialidocious"></textarea>
                         </td>
                     </tr>
                 </table>
 
-                <output id="error-out"></output>
-
                 <h2>Actions</h2>
-                <button id="random-word-button" class="button">Random Input</button>
-                <button id="run-button" class="button">Run</button>
-                <button id="random-button" class="button">Random Automata</button>
-                <button id="submit-button" class="button">Submit Automata</button> 
+                <button id="random-word" class="button">Random Input</button>
+                <button id="run" class="button">Run</button>
+                <button id="random-automaton" class="button">Random Automaton</button>
+                <button id="submit" class="button">Submit Automaton</button> 
 
                 <h2>Settings</h2>
                 <table>
@@ -76,7 +74,13 @@
                             </input>
                         </td>
                     </tr>
-                </table>             
+                </table> 
+                
+                <h2>Results</h2>
+                <output id="error" class="results-hidden"><br></output>
+                <output id="no-errors">👍 No errors.<br></output>
+                <output id="bad-result" class="results-hidden">🔴 The word got rejected.</output>
+                <output id="good-result" class="results-hidden">🟢 The word got accepted.</output>
             </div>
             <div class="right-section">
                 <canvas id="canvas" width="900" height="900"></canvas>

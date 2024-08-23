@@ -12,39 +12,39 @@ body {
     border-width: 1.5px;
 }
 
-#run-button {
+#run {
     background-color:gold;
     font-weight: bold;
 }
 
-#run-button:active {
+#run:active {
     background-color:goldenrod;
     font-weight: bold;
 }
 
-#random-word-button {
+#random-word {
     background-color:darkseagreen;
 }
 
-#random-word-button:active {
+#random-word:active {
     background-color:cadetblue;
 }
 
-#submit-button {
+#submit {
     background-color:lightsteelblue;
     font-weight: bold;
 }
 
-#submit-button:active {
+#submit:active {
     background-color: lightslategrey;
     font-weight: bold;
 }
 
-#random-button {
+#random-automaton {
     background-color:pink;
 }
 
-#random-button:active {
+#random-automaton:active {
     background-color:plum;
 }
 
@@ -83,10 +83,8 @@ body {
     overflow: hidden;
 }
 
-#error-out {
+#error {
     color:crimson;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
 }
 
 #canvas {
@@ -96,4 +94,8 @@ body {
 
 .control {
     text-align: right;
+}
+
+.results-hidden {
+    display: none;
 }

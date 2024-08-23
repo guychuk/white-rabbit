@@ -1,23 +1,5 @@
 import { NFA, DFA } from "../../src/automaton";
-
-const randomInteger = (lower: number, upper: number) : number =>
-    Math.floor(lower + Math.random() * (upper - lower + 1));
-
-const flipCoin = (p: number) : boolean => Math.random() <= p;
-
-function randomElements<T>(population: Iterable<T>, count: number) : T[] {
-    const arr = Array.from(population);
-    const chosens: T[] = [];
-    var current;
-
-    while (chosens.length < count && arr.length > 0){
-        current = randomInteger(0, arr.length - 1);
-        chosens.push(arr[current]);
-        arr.splice(current, 1);
-    }
-
-    return chosens;
-}
+import { randomInteger, randomElements } from "../../src/util";
 
 export function generateAutomaton(deterministic: boolean) : NFA{
     const letterPool = "abcdefghijklmnopqrstuvwxyz";
@@ -45,4 +27,14 @@ export function generateAutomaton(deterministic: boolean) : NFA{
     }
 
     return NFA.create(alphabet, states, acceptingStates, initialState, transitions);
+}
+
+export function generateWord(alphabet: string[]) : string {
+    return Array.from({ length: randomInteger(0, 10) }, () => randomElements(alphabet, 1)).join('');
+}
+
+export function valueToCleanArray(value: string, separator: string) : string[]{
+    const clear = value.replace(/\s+/g, "");
+
+    return clear.length === 0 ? [] : clear.split(separator);
 }
