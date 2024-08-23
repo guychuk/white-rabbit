@@ -118,8 +118,6 @@ async function runWordClick(){
 
     const delay = parseInt(delayTextbox.value); // ms
 
-    // TODO: disable buttons? adding stop button?
-
     var pos = statesPositions.get(currentAutomaton.initialState);
 
     if (pos === undefined){
