@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "outDir": "./dist",
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "strictPropertyInitialization": false,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "types": ["jest", "node"],
+        "baseUrl": ".",
+    },
+    "include": [
+        "./src",
+        "./tests"
+    ],
+    "exclude": ["node_modules"]
+}
