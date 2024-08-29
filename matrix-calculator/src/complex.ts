@@ -1,63 +1,192 @@
-export class Complex {
-    real: number;
-    imaginary: number;
+import { round } from "./util";
 
-    constructor(real: number, imaginary: number) {
-        this.real = real;
-        this.imaginary = imaginary;
+export type Scalar = number | Complex;
+
+/** The number of decimal places to round the real and imaginary parts of a complex number to. */
+const precision: number = 12;
+const epsilonPow: number = 9;
+const epsilon: number = Number("1e-" + epsilonPow);
+
+/**
+ * A class representing a complex number.
+ * @note The class is immutable.
+ */
+export class Complex {
+    private _re: number;
+    private _im: number;
+
+    // polar form (not fixed!)
+    private _r: number;
+    private _t: number; // theta
+
+    private constructor(real: number, imaginary: number) {
+        this._re = round(real, precision, epsilon);
+        this._im = round(imaginary, precision, epsilon);
+
+        this._r = Math.sqrt(Math.pow(this._re, 2) + Math.pow(this._im, 2));
+        this._t = Math.atan2(this._im, this._re);
+    }
+
+    // makers
+
+    static fromCartesian(real: number, imaginary: number) : Complex {
+        return new Complex(real, imaginary);
+    }
+
+    static fromPolar(r: number, theta: number) : Complex {
+        const c = round(Math.cos(theta), precision);
+        const s = round(Math.sin(theta), precision);
+
+        return Complex.fromCartesian(r * c, r * s);
+    }
+
+    static fromReal(n: number) : Complex {
+        return Complex.fromCartesian(n, 0);
+    }
+
+    static fromScalar(x: Scalar) : Complex {
+        return x instanceof Complex ? x : Complex.fromReal(x);
+    }
+
+    static readonly one = Complex.fromCartesian(1, 0);
+
+    static readonly zero = Complex.fromCartesian(0, 0);
+
+    static readonly minusOne = Complex.fromCartesian(-1, 0);
+
+    static readonly i = Complex.fromCartesian(0, 1);
+
+    // getters
+    
+    get real() : number {
+        return this._re;
+    }
+
+    get imaginary() : number {
+        return this._im;
+    }
+
+    get r() : number {
+        return this._r;
+    }
+
+    get theta() : number {
+        return this._t;
+    }
+
+    get cartesian() : [number, number] {
+        return [this._re, this._im];
+    }
+
+    get polar() : [number, number] {
+        return [this._r, this._t];
     }
 
     // arithmetic operations
 
-    add(other: Complex) : Complex {
-        return new Complex(this.real + other.real, this.imaginary + other.imaginary);
+    /**
+     * Adds a complex number to this complex number.
+     * @param other The complex number to add.
+     * @returns A new complex number that is the sum of this complex number and the other complex number.
+     */
+    add(other: Scalar) : Complex {
+        const otherComplex = Complex.fromScalar(other);
+
+        return Complex.fromCartesian(this.real + otherComplex.real, this.imaginary + otherComplex.imaginary);
     }
 
-    subtract(other: Complex) : Complex {
-        return new Complex(this.real - other.real, this.imaginary - other.imaginary);
+    /**
+     * Subtracts a complex number from this complex number.
+     * @param other The complex number to subtract.
+     * @returns A new complex number that is the difference between this complex number and the other complex number.
+     */
+    subtract(other: Scalar) : Complex {
+        const otherComplex = Complex.fromScalar(other);
+        
+        return Complex.fromCartesian(this.real - otherComplex.real, this.imaginary - otherComplex.imaginary);
     }
 
-    multiply(other: Complex) : Complex {
-        return new Complex(this.real * other.real - this.imaginary * other.imaginary, this.real * other.imaginary + this.imaginary * other.real);
+    /**
+     * Multiplies this complex number by another complex number.
+     * @param other The complex number to multiply by.
+     * @returns A new complex number that is the product of this complex number and the other complex number.
+     */
+    multiply(other: Scalar) : Complex {
+        const otherComplex = Complex.fromScalar(other);
+        
+        return Complex.fromPolar(this.r * otherComplex.r, this.theta + otherComplex.theta);
     }
 
-    divide(other: Complex) : Complex {
-        const denominator = Math.pow(other.real, 2) + Math.pow(other.imaginary, 2);
-
-        const numerator = this.multiply(other.conjugate());
-
-        return new Complex(numerator.real / denominator, numerator.imaginary / denominator);
+    /**
+     * Divides this complex number by another complex number.
+     * @param other The complex number to divide by.
+     * @returns A new complex number that is the quotient of this complex number and the other complex number.
+     */
+    divide(other: Scalar) : Complex {
+        const otherComplex = Complex.fromScalar(other);
+        
+        return Complex.fromPolar(this.r / otherComplex.r, this.theta - otherComplex.theta);
     }
 
+    /** @returns The multiplicative inverse of this complex number. */
     reciprocal() : Complex {
-        return new Complex(1, 0).divide(this);
+        return Complex.fromPolar(1 / this._r, -1 * this._t);
+    }
+
+    /**
+     * Raises this complex number to the power of n.
+     * @param n The power to raise this complex number to.
+     * @returns A new complex number that is this complex number raised to the power of n.
+     */
+    power(n: number) : Complex {
+        return Complex.fromPolar(Math.pow(this._r, n), n * this._t);
     }
 
     // other operations
 
+    /** @returns The complex conjugate of this complex number. */
     conjugate() : Complex {
-        return new Complex(this.real, -1 * this.imaginary);
+        return Complex.fromCartesian(this._re, -1 * this._im);
     }
 
+    /** @returns The absolute value of this complex number. */
     absoluteValue() : number {
-        return Math.sqrt(Math.pow(this.real, 2) + Math.pow(this.imaginary, 2));
+        return this._r;
     }
 
-    equals(other: Complex) : boolean {
-        return this.real === other.real && this.imaginary === other.imaginary;
+    equals(other: Scalar) : boolean {
+        const otherComplex = Complex.fromScalar(other);
+        
+        return this.real.toPrecision(epsilonPow) == otherComplex.real.toPrecision(epsilonPow) && 
+        this.imaginary.toPrecision(epsilonPow) == otherComplex.imaginary.toPrecision(epsilonPow);
     }
 
     // properties
 
     isReal() : boolean {
-        return this.imaginary === 0;
+        return this._im === 0;
+    }
+
+    isZero() : boolean {
+        return this._r === 0;
     }
 
     isPureImaginary() : boolean {
-        return this.real === 0;
+        return this._re === 0;
     }
 
+    // others
+
     toString() : string {
-        return `${this.real} + ${this.imaginary}i`;
+        return `${this._re} + ${this._im}i`;
+    }
+
+    /**
+     * Rounds the real and imaginary parts of this complex number to the specified number of decimal places.
+     * @param digits The number of decimal places to round to.
+     * @returns A new complex number with the real and imaginary parts rounded to the specified number of decimal places.
+     */
+    toRound(digits: number = precision) : Complex {
+        return Complex.fromCartesian(round(this._re, digits,epsilon), round(this._im, digits,epsilon));
     }
 }

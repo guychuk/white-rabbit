@@ -11,11 +11,12 @@
         "resolveJsonModule": true,
         "allowJs": true,
         "types": ["jest", "node"],
-        "baseUrl": ".",
+        "baseUrl": "."
     },
     "include": [
         "./src",
-        "./tests"
+        "./tests",
+        "./playground"
     ],
     "exclude": ["node_modules"]
 }
