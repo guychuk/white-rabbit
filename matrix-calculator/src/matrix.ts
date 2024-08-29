@@ -1,5 +1,5 @@
 import { Complex, Scalar } from "./complex";
-import { EliminationIterator } from "./elimination-iterator";
+import { EliminationIterator, RowOperation, RowOperationType, RowOperationResult } from "./elimination-iterator";
 
 export class Matrix {
     private matrix: Complex[][];
@@ -114,6 +114,28 @@ export class Matrix {
             Complex.zero);
     };
 
+    inverse() : Matrix {
+        if (!this.isSquare()){
+            throw new Error("cannot calculate the inverse of a non-square matrix");
+        }
+
+        const it = this.RREFIterator();
+
+        const id = Matrix.identity(this.rows);
+
+        for (const m of it){
+            id.rowOperation(m.operation);
+        }
+
+        const result: RowOperationResult = it.next().value;
+
+        if (!result.matrix.isIdentity()){
+            throw new Error("matrix is not invertible");
+        }
+
+        return id;
+    }
+
     // scalar operations
 
     multiplyByScalar(scalar: Scalar) : Matrix {
@@ -169,6 +191,11 @@ export class Matrix {
 
     // row operations
 
+    /**
+     * Swaps two rows in the matrix, in place.
+     * @param i the first row.
+     * @param j the second row.
+     */
     swapRows(i: number, j: number) : void {
         const temp = this.getRow(i);
 
@@ -176,25 +203,71 @@ export class Matrix {
         this.setRow(j, temp);
     }
 
+    /**
+     * Multiplies a row by a scalar, in place.
+     * @param row the row to multiply.
+     * @param scalar the scalar to multiply by.
+     */
     multiplyRow(row: number, scalar: Scalar) : void {
         this.setRow(row, this.getRow(row).map(cell => cell.multiply(scalar)));
     }
 
+    /**
+     * Adds a scalar multiple of one row to another row, in place.
+     * @param i the row to add to.
+     * @param j the row to add.
+     * @param scalar the scalar to multiply the row by.
+     */
     addRow(i: number, j: number, scalar: Scalar) : void {
         this.setRow(i, this.getRow(i).map((cell, k) => cell.add(this.get(j, k).multiply(scalar))));
     }
 
-    gaussEliminationIterator() : EliminationIterator {
+    RREFIterator() : EliminationIterator {
         return new EliminationIterator(this);
     }
 
-    reducedRowEchelonForm() : Matrix {
-        const iterator = this.gaussEliminationIterator();
+    /**
+     * @returns the reduced row echelon form of the matrix.
+     */
+    RREF() : Matrix {
+        const iterator = this.RREFIterator();
 
         for (const m of iterator)
             continue;
 
-        return iterator.next().value;
+        return iterator.next().value.matrix;
+    }
+
+    /**
+     * Reduces the matrix to its reduced row echelon form, in place.
+     */
+    reduceToRREF() : void {
+        this.matrix = this.RREF().matrix;
+    }
+
+    /**
+     * Performs a row operation on the matrix.
+     * @param operation the row operation to perform.
+     * @note this method modifies the matrix in place.
+     */
+    rowOperation(operation: RowOperation) : void {
+        switch (operation.type) {
+            case RowOperationType.Swap:
+                this.swapRows(operation.row1, operation.row2);
+                break;
+            case RowOperationType.Multiply:
+                this.multiplyRow(operation.row, operation.scalar);
+                break;
+            case RowOperationType.Add:
+                this.addRow(operation.row1, operation.row2, operation.scalar);
+                break;
+            case RowOperationType.None:
+                break;
+        }
+    }
+
+    rowOperationSequence(operations: RowOperation[]) : void {
+        operations.forEach(op => this.rowOperation(op));
     }
 
     // fields
@@ -244,6 +317,10 @@ export class Matrix {
 
     isTriangular() : boolean {
         return this.isUpperTriangular() || this.isLowerTriangular();
+    }
+
+    isIdentity() : boolean {
+        return this.equals(Matrix.identity(this.rows));
     }
 
     // helper methods

@@ -20,23 +20,23 @@ export type RowOperation = SwapOperation | AddOperation | MultiplyOperation | No
 
 export type RowOperationResult = { matrix: Matrix, operation: RowOperation };
 
-const makeSwapOperation = (row1: number, row2: number) : SwapOperation => {
+export const makeSwapOperation = (row1: number, row2: number) : SwapOperation => {
     return { type: RowOperationType.Swap, row1: row1, row2: row2 };
 }
 
-const makeAddOperation = (row1: number, row2: number, scalar: Scalar) : AddOperation => {
+export const makeAddOperation = (row1: number, row2: number, scalar: Scalar) : AddOperation => {
     return { type: RowOperationType.Add, row1: row1, row2: row2, scalar: scalar };
 }
 
-const makeMultiplyOperation = (row: number, scalar: Scalar) : MultiplyOperation => {
+export const makeMultiplyOperation = (row: number, scalar: Scalar) : MultiplyOperation => {
     return { type: RowOperationType.Multiply, row: row, scalar: scalar };
 }
 
-const makeNoneOperation = () : NoneOperation => {
+export const makeNoneOperation = () : NoneOperation => {
     return { type: RowOperationType.None };
 }
 
-const makeRowOperationResult = (matrix: Matrix, operation: RowOperation) : RowOperationResult => {
+export const makeRowOperationResult = (matrix: Matrix, operation: RowOperation) : RowOperationResult => {
     return { matrix: matrix.copy(), operation: operation };
 }
 
@@ -105,7 +105,7 @@ export class EliminationIterator implements IterableIterator<RowOperationResult>
 
     next(): IteratorResult<RowOperationResult, any> {
         if (this.done){
-            return { value: this.matrix, done: true };
+            return { value: makeRowOperationResult(this.matrix, makeNoneOperation()), done: true };
         }
 
         if (this.movingUp){

@@ -116,4 +116,58 @@ describe("Basic Matrix Operations", () => {
             [Complex.fromCartesian(7, 7), Complex.fromCartesian(8, 8), Complex.fromCartesian(9, 9)]
         ]).determinant().equals(0)).toBeTruthy();
     });
+
+    it ("should calculate the inverse of matrices", () => {
+        expect(new Matrix([
+            [1, 2],
+            [3, 4]
+        ]).inverse().equals(new Matrix([
+            [-2, 1],
+            [1.5, -0.5]
+        ]))).toBeTruthy();
+
+        expect(new Matrix([
+            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
+            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+        ]).inverse().equals(new Matrix([
+            [Complex.fromCartesian(-1, 1), Complex.fromCartesian(1/2, -1/2)],
+            [Complex.fromCartesian(3/4, -3/4), Complex.fromCartesian(-1/4, 1/4)]
+        ]))).toBeTruthy();
+
+        expect(() => new Matrix([
+            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2), Complex.fromCartesian(3, 3)],
+            [Complex.fromCartesian(4, 4), Complex.fromCartesian(5, 5), Complex.fromCartesian(6, 6)],
+            [Complex.fromCartesian(7, 7), Complex.fromCartesian(8, 8), Complex.fromCartesian(9, 9)]
+        ]).inverse()).toThrow();
+    });
+
+    it ("should multiply a matrix with its inverse to get the identity matrix", () => {
+        const A = new Matrix([
+            [1, 2],
+            [3, 4]
+        ]);
+
+        const AInverse = A.inverse();
+
+        expect(A.multiply(AInverse).isIdentity()).toBeTruthy();
+
+        const B = new Matrix([
+            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
+            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+        ]);
+
+        const BInverse = B.inverse();
+
+        expect(B.multiply(BInverse).isIdentity()).toBeTruthy();
+
+        const C = new Matrix([
+            [1, 2, -1],
+            [2, 1, 2],
+            [-1, 2, 1]
+        ]);
+
+        const CInverse = C.inverse();
+
+        expect(C.multiply(CInverse).isIdentity()).toBeTruthy();
+    });
 });

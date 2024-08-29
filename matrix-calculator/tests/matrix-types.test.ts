@@ -179,4 +179,26 @@ describe("Matrix Types", () => {
             [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
         ]).isLowerTriangular()).toBeFalsy();
     });
+
+    it ("should check if a matrix is an identity matrix", () => {
+        expect(new Matrix([
+            [1, 0],
+            [0, 1]
+        ]).isIdentity()).toBeTruthy();
+
+        expect(new Matrix([
+            [1, 2],
+            [3, 4]
+        ]).isIdentity()).toBeFalsy();
+
+        expect(new Matrix([
+            [Complex.fromCartesian(1, 0), Complex.fromCartesian(0, 0)],
+            [Complex.fromCartesian(0, 0), Complex.fromCartesian(1, 0)]
+        ]).isIdentity()).toBeTruthy();
+
+        expect(new Matrix([
+            [Complex.fromCartesian(1, 0), Complex.fromCartesian(0, 0)],
+            [Complex.fromCartesian(0, 0), Complex.fromCartesian(1, 1)]
+        ]).isIdentity()).toBeFalsy();
+    });
 });
