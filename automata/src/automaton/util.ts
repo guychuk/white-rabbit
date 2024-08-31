@@ -16,14 +16,14 @@ export function flipCoin(p: number) : boolean {
 
 export function randomElements<T>(population: Iterable<T>, count: number) : T[] {
     const arr = Array.from(population);
-    const chosens: T[] = [];
+    const chosen: T[] = [];
     var current;
 
-    while (chosens.length < count && arr.length > 0){
+    while (chosen.length < count && arr.length > 0){
         current = randomInteger(0, arr.length - 1);
-        chosens.push(arr[current]);
+        chosen.push(arr[current]);
         arr.splice(current, 1);
     }
 
-    return chosens;
+    return chosen;
 }

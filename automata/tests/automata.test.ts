@@ -1,4 +1,4 @@
-import { NFA, DFA } from "../src/automaton";
+import { NFA, DFA } from "../src/automaton/automaton"
 
 describe("DFA Test", () => {
     describe("Valid DFAs", () => {

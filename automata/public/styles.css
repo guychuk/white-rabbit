@@ -48,6 +48,14 @@ body {
     background-color:plum;
 }
 
+#reset {
+    background-color:lightgray;
+}
+
+#reset:active {
+    background-color:darkgrey;
+}
+
 #control {
     align-content: center;
 }

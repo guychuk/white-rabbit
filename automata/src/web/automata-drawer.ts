@@ -1,4 +1,4 @@
-import { NFA } from "src/automaton";
+import { NFA } from "../automaton/automaton"
 
 const ST_RAD_OUT = 30, ST_RAD_IN = 25, ST_FONT = "20px Cambria";
 const TR_ARR_HEAD = 10, TR_SELF_RAD = 15, TR_PAD = 10, TR_ELV = 30, TR_FONT = "20px Cambria";
@@ -232,8 +232,8 @@ function drawTransition(canvas: HTMLCanvasElement, x1: number, y1: number, x2: n
 /**
  * calculate the position of each state's circle in the canvas.
  * @param canvas the canvas.
- * @param automaton the atomaton.
- * @returns a mappig of states and positions (state, {x, y}).
+ * @param automaton the automaton.
+ * @returns a mapping of states and positions (state, {x, y}).
  */
 function calculatePositions(canvas: HTMLCanvasElement, automaton: NFA) : Map<string, {x: number, y: number}>{
     const centerX = canvas.width / 2, centerY = canvas.height / 2;
@@ -255,7 +255,7 @@ function calculatePositions(canvas: HTMLCanvasElement, automaton: NFA) : Map<str
 /**
  * draw an entire automaton diagram.
  * @param canvas a canvas to draw on.
- * @param automaton an automator to draw.
+ * @param automaton an automaton to draw.
  * @returns the positions of the states.
  */
 export function drawAutomaton(canvas: HTMLCanvasElement, automaton: NFA): Map<string, {x: number, y: number}> {

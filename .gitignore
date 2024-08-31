@@ -1,6 +1,2 @@
-automata-simulator/node_modules
-automata-simulator/playground
-automata-simulator/dist
-matrix-calculator/node_modules
-matrix-calculator/playground
-matrix-calculator/dist
+*/node_modules
+*/playground

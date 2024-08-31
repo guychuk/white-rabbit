@@ -15,21 +15,21 @@
                 <table>
                     <tr>
                         <td><b>Alphabet:</b><sup class="must-provide">*</sup><br>
-                            <span class="hints">(comma seperated)</span></td>
+                            <span class="hints">(comma separated)</span></td>
                         <td>
                             <textarea class="textboxes" id="alphabet" cols="50" rows="2" placeholder="a, b, c, ..."></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td><b>States:</b><sup class="must-provide">*</sup><br>
-                            <span class="hints">(comma seperated)</span></td>
+                            <span class="hints">(comma separated)</span></td>
                         <td>
                             <textarea class="textboxes" id="states" cols="50" rows="2" placeholder="q0, q1, q2, ..."></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td style="width: 32ch;"><b>Accepting States:</b><br>
-                            <span class="hints">(comma seperated)</span></td>
+                            <span class="hints">(comma separated)</span></td>
                         <td>
                             <textarea class="textboxes" id="acceptingStates" cols="50" rows="2" placeholder="q1, q2, ..."></textarea>
                         </td>
@@ -42,7 +42,7 @@
                     </tr>
                     <tr>
                         <td><b>Transitions:</b> <br> 
-                            <span class="hints">(seperated within transition, transitions seperated by a slash)</span></td>
+                            <span class="hints">(separated within transition, transitions separated by a slash)</span></td>
                         <td>
                             <textarea class="textboxes" id="transitions" cols="50" rows="5" placeholder="q0, a, q1 / q0, b, q2 / ..."></textarea>
                         </td>
@@ -60,6 +60,7 @@
                 <button id="run" class="button">Run</button>
                 <button id="random-automaton" class="button">Random Automaton</button>
                 <button id="submit" class="button">Submit Automaton</button> 
+                <button id="reset" class="button">Reset</button> 
 
                 <h2>Settings</h2>
                 <table>
@@ -87,8 +88,6 @@
             </div>
         </div>
 
-        <script>var exports = {};</script>
-
-        <script type="module" src="../dist/public/scripts/automata.js"></script>
+        <script src="index.js"></script>
     </body>
 </html>

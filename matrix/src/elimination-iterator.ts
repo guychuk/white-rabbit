@@ -216,7 +216,7 @@ export class EliminationIterator implements IterableIterator<RowOperationResult>
     }
 
     /**
-     * Eliminate nonzeros in the same column as the pivot and below it.
+     * Eliminate non-zeros in the same column as the pivot and below it.
      * @pre the pivot's value is 1.
      * @returns true if eliminated a row, false otherwise.
      */
@@ -235,7 +235,7 @@ export class EliminationIterator implements IterableIterator<RowOperationResult>
     }
 
     /**
-     * Eliminate nonzeros in the same column as the pivot and above it.
+     * Eliminate non-zeros in the same column as the pivot and above it.
      * @pre the pivot's value is 1.
      * @returns true if eliminated a row and there are more rows to check, false otherwise.
      */

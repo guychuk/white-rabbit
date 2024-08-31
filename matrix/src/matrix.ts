@@ -11,7 +11,7 @@ export class Matrix {
         this.matrix = matrix.map(row => row.map(cell => Complex.fromScalar(cell)));
     }
 
-    // geters
+    // getters
 
     get rows() : number {
         return this.getColumn(0).length;

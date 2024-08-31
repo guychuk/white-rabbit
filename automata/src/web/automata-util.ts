@@ -1,5 +1,5 @@
-import { NFA, DFA } from "../../src/automaton";
-import { randomInteger, randomElements } from "../../src/util";
+import { NFA, DFA } from "../automaton/automaton"
+import { randomInteger, randomElements } from "../automaton/util";
 
 export function generateAutomaton(deterministic: boolean) : NFA{
     const letterPool = "abcdefghijklmnopqrstuvwxyz";
