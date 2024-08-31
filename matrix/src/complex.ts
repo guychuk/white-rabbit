@@ -109,36 +109,72 @@ export class Complex {
     /**
      * Multiplies this complex number by another complex number.
      * @param other The complex number to multiply by.
+     * @param usePolar Whether to use the polar form to calculate the product.
      * @returns A new complex number that is the product of this complex number and the other complex number.
      */
-    multiply(other: Scalar) : Complex {
+    multiply(other: Scalar, usePolar: boolean = true) : Complex {
         const otherComplex = Complex.fromScalar(other);
-        
+
+        if (!usePolar){
+            return Complex.fromCartesian(
+                this.real * otherComplex.real - this.imaginary * otherComplex.imaginary, 
+                this.real * otherComplex.imaginary + this.imaginary * otherComplex.real
+            );
+        }
+
         return Complex.fromPolar(this.r * otherComplex.r, this.theta + otherComplex.theta);
     }
 
     /**
      * Divides this complex number by another complex number.
      * @param other The complex number to divide by.
+     * @param usePolar Whether to use the polar form to calculate the quotient.
      * @returns A new complex number that is the quotient of this complex number and the other complex number.
      */
-    divide(other: Scalar) : Complex {
+    divide(other: Scalar, usePolar: boolean = true) : Complex {
         const otherComplex = Complex.fromScalar(other);
+
+        if (!usePolar){
+            return this.multiply(otherComplex.reciprocal(usePolar), usePolar);
+        }
         
         return Complex.fromPolar(this.r / otherComplex.r, this.theta - otherComplex.theta);
     }
 
-    /** @returns The multiplicative inverse of this complex number. */
-    reciprocal() : Complex {
+    /** 
+     * @param usePolar Whether to use the polar form to calculate the multiplicative inverse.
+     * @returns The multiplicative inverse of this complex number. 
+     */
+    reciprocal(usePolar: boolean = true) : Complex {
+        if (!usePolar){
+            const denominator = Math.pow(this.real, 2) + Math.pow(this.imaginary, 2);
+
+            return this.conjugate().multiply(1 / denominator, usePolar);
+        }
+
         return Complex.fromPolar(1 / this._r, -1 * this._t);
     }
 
     /**
      * Raises this complex number to the power of n.
-     * @param n The power to raise this complex number to.
+     * @param n The power to raise this complex number to, an integer.
+     * @param usePolar Whether to use the polar form to calculate the power.
      * @returns A new complex number that is this complex number raised to the power of n.
      */
-    power(n: number) : Complex {
+    power(n: number, usePolar: boolean = true) : Complex {
+        if (!Number.isInteger(n))
+            throw new Error("The power must be an integer.");
+
+        if (!usePolar){
+            let result = Complex.one;
+
+            for (let i = 0; i < Math.abs(n); i++){
+                result = result.multiply(this, false);
+            }
+
+            return n > 0 ? result : result.reciprocal(usePolar);
+        }
+
         return Complex.fromPolar(Math.pow(this._r, n), n * this._t);
     }
 
@@ -158,7 +194,7 @@ export class Complex {
         const otherComplex = Complex.fromScalar(other);
         
         return this.real.toPrecision(epsilonPow) == otherComplex.real.toPrecision(epsilonPow) && 
-        this.imaginary.toPrecision(epsilonPow) == otherComplex.imaginary.toPrecision(epsilonPow);
+            this.imaginary.toPrecision(epsilonPow) == otherComplex.imaginary.toPrecision(epsilonPow);
     }
 
     // properties

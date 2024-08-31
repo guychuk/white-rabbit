@@ -81,13 +81,15 @@ export class EliminationIterator implements IterableIterator<RowOperationResult>
     private eliminatingAbove: boolean;
     private movingUp: boolean;
     private usedRows: number;
+    private usePolar: boolean;
 
     /**
      * Build a new Gaussian elimination iterator.
      * @param matrix The matrix to perform Gaussian elimination on.
+     * @param usePolar If true, the matrix will be converted to polar form before elimination.
      * @note The matrix will be copied, so the original matrix will not be modified.
      */
-    constructor(matrix: Matrix) {
+    constructor(matrix: Matrix, usePolar: boolean = true) {
         this.matrix = matrix.copy();
         this.row = -1;
         this.column = -1;
@@ -97,6 +99,7 @@ export class EliminationIterator implements IterableIterator<RowOperationResult>
         this.eliminatingAbove = false
         this.movingUp = false;
         this.usedRows = 0;
+        this.usePolar = usePolar;
     }
 
     [Symbol.iterator](): IterableIterator<RowOperationResult> {
@@ -208,9 +211,9 @@ export class EliminationIterator implements IterableIterator<RowOperationResult>
             return makeNoneOperation();
         }
 
-        const operation = makeMultiplyOperation(this.row, this.matrix.get(this.row, this.column).reciprocal());
+        const operation = makeMultiplyOperation(this.row, this.matrix.get(this.row, this.column).reciprocal(this.usePolar));
 
-        this.matrix.multiplyRow(this.row, operation.scalar);
+        this.matrix.multiplyRow(this.row, operation.scalar, this.usePolar);
 
         return operation;
     }
@@ -223,7 +226,7 @@ export class EliminationIterator implements IterableIterator<RowOperationResult>
     private eliminateColumnBelow() : AddOperation | NoneOperation {
         for (let r = this.row + 1; r < this.matrix.rows; r++){
             if (!this.matrix.get(r, this.column).equals(0)){
-                const operation = makeAddOperation(r, this.row, this.matrix.get(r, this.column).multiply(-1));
+                const operation = makeAddOperation(r, this.row, this.matrix.get(r, this.column).multiply(-1, this.usePolar));
 
                 this.matrix.addRow(r, this.row, operation.scalar);
 
@@ -250,7 +253,7 @@ export class EliminationIterator implements IterableIterator<RowOperationResult>
             // find the next cell to eliminate
             for (r = this.row - 1; 0 <= r; r--){
                 if (!this.matrix.get(r, this.column).equals(0)){
-                    const operation = makeAddOperation(r, this.row, this.matrix.get(r, this.column).multiply(-1));
+                    const operation = makeAddOperation(r, this.row, this.matrix.get(r, this.column).multiply(-1, this.usePolar));
 
                     this.matrix.addRow(r, this.row, operation.scalar);
 

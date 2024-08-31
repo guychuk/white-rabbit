@@ -100,7 +100,12 @@ export class Matrix {
         return new Matrix(this.matrix.filter((_, ri) => ri !== row).map(row => row.filter((_, ci) => ci !== column)));
     }
 
-    determinant() : Complex{
+    /**
+     * Calculates the determinant of the matrix.
+     * @param usePolar Whether to use the polar form of the complex numbers to calculate the determinant.
+     * @returns the determinant of the matrix.
+     */
+    determinant(usePolar: boolean = true) : Complex{
         if (!this.isSquare())
             throw new Error("cannot calculate the determinant of a non-square matrix");
 
@@ -110,7 +115,7 @@ export class Matrix {
         const sign = [Complex.one, Complex.minusOne];
 
         return this.getRow(0).reduce((acc, curr, i) => 
-            acc.add(sign[i % 2].multiply(curr.multiply(this.minor(0, i).determinant()))),
+            acc.add(sign[i % 2].multiply(curr.multiply(this.minor(0, i).determinant(), usePolar))),
             Complex.zero);
     };
 
@@ -138,8 +143,8 @@ export class Matrix {
 
     // scalar operations
 
-    multiplyByScalar(scalar: Scalar) : Matrix {
-        return new Matrix(this.matrix.map(row => row.map(item => item.multiply(scalar))));
+    multiplyByScalar(scalar: Scalar, usePolar: boolean = true) : Matrix {
+        return new Matrix(this.matrix.map(row => row.map(item => item.multiply(scalar, usePolar))));
     }
 
     addScalar(scalar: Scalar) : Matrix {
@@ -166,17 +171,17 @@ export class Matrix {
         return this.columns === other.rows;
     }
 
-    multiply(other: Matrix) : Matrix {
+    multiply(other: Matrix, usePolar: boolean = true) : Matrix {
         if (!this.canMultiply(other))
             throw new Error("cannot multiply matrices with incompatible dimensions");
 
         return new Matrix(this.getColumn(0).map((_, i) => // for each row 
             other.getRow(0).map((_, j) => // we want to make a a new row with the same number of columns as the other matrix
                 this.getRow(0).reduce((acc, _, k) => // k from 0 to the number of columns in the first matrix
-                    acc.add(this.get(i, k).multiply(other.get(k, j))), Complex.zero))));
+                    acc.add(this.get(i, k).multiply(other.get(k, j), usePolar)), Complex.zero))));
     }
 
-    power(n: number) : Matrix {
+    power(n: number, usePolar: boolean = true) : Matrix {
         if (!this.isSquare())
             throw new Error("cannot raise a non-square matrix to a power");
 
@@ -186,7 +191,7 @@ export class Matrix {
         if (n < 0)
             throw new Error("cannot raise a matrix to a negative power");
 
-        return Array.from({length: n - 1}, () => this).reduce((acc: Matrix, _) => acc.multiply(this), this);
+        return Array.from({length: n - 1}, () => this).reduce((acc: Matrix, _) => acc.multiply(this, usePolar), this);
     }
 
     // row operations
@@ -207,9 +212,10 @@ export class Matrix {
      * Multiplies a row by a scalar, in place.
      * @param row the row to multiply.
      * @param scalar the scalar to multiply by.
+     * @param usePolar whether to use the polar form of the complex numbers to calculate the result.
      */
-    multiplyRow(row: number, scalar: Scalar) : void {
-        this.setRow(row, this.getRow(row).map(cell => cell.multiply(scalar)));
+    multiplyRow(row: number, scalar: Scalar, usePolar: boolean = true) : void {
+        this.setRow(row, this.getRow(row).map(cell => cell.multiply(scalar, usePolar)));
     }
 
     /**
@@ -222,15 +228,15 @@ export class Matrix {
         this.setRow(i, this.getRow(i).map((cell, k) => cell.add(this.get(j, k).multiply(scalar))));
     }
 
-    RREFIterator() : EliminationIterator {
-        return new EliminationIterator(this);
+    RREFIterator(usePolar: boolean = true) : EliminationIterator {
+        return new EliminationIterator(this, usePolar);
     }
 
     /**
      * @returns the reduced row echelon form of the matrix.
      */
-    RREF() : Matrix {
-        const iterator = this.RREFIterator();
+    RREF(usePolar: boolean = true) : Matrix {
+        const iterator = this.RREFIterator(usePolar);
 
         for (const m of iterator)
             continue;
@@ -241,8 +247,8 @@ export class Matrix {
     /**
      * Reduces the matrix to its reduced row echelon form, in place.
      */
-    reduceToRREF() : void {
-        this.matrix = this.RREF().matrix;
+    reduceToRREF(usePolar: boolean = true) : void {
+        this.matrix = this.RREF(usePolar).matrix;
     }
 
     /**
@@ -250,13 +256,13 @@ export class Matrix {
      * @param operation the row operation to perform.
      * @note this method modifies the matrix in place.
      */
-    rowOperation(operation: RowOperation) : void {
+    rowOperation(operation: RowOperation, usePolar: boolean = true) : void {
         switch (operation.type) {
             case RowOperationType.Swap:
                 this.swapRows(operation.row1, operation.row2);
                 break;
             case RowOperationType.Multiply:
-                this.multiplyRow(operation.row, operation.scalar);
+                this.multiplyRow(operation.row, operation.scalar, usePolar);
                 break;
             case RowOperationType.Add:
                 this.addRow(operation.row1, operation.row2, operation.scalar);
@@ -266,8 +272,8 @@ export class Matrix {
         }
     }
 
-    rowOperationSequence(operations: RowOperation[]) : void {
-        operations.forEach(op => this.rowOperation(op));
+    rowOperationSequence(operations: RowOperation[], usePolar: boolean = true) : void {
+        operations.forEach(op => this.rowOperation(op, usePolar));
     }
 
     // fields
@@ -303,8 +309,8 @@ export class Matrix {
             row.every((cell, j) => i === j || cell.equals(Complex.zero)));
     }
 
-    isInvertible() : boolean {
-        return this.isSquare() && !this.determinant().equals(0);
+    isInvertible(usePolar: boolean = true) : boolean {
+        return this.isSquare() && !this.determinant(usePolar).equals(0);
     }
 
     isUpperTriangular() : boolean {

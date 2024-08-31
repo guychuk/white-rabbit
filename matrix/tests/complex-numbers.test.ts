@@ -28,37 +28,37 @@ describe("Complex Numbers Arithmetics", () => {
     });
 
     it ("should multiply complex numbers", () => {
-        expect(Complex.fromCartesian(0, 0).multiply(Complex.fromCartesian(0, 0)).equals(Complex.fromCartesian(0, 0))).toBeTruthy();
-        expect(Complex.fromCartesian(1, 4).multiply(Complex.fromCartesian(2, 3)).equals(Complex.fromCartesian(-10, 11))).toBeTruthy();
-        expect(Complex.fromCartesian(2, 0).multiply(Complex.fromCartesian(3, 2)).equals(Complex.fromCartesian(0, 13))).toBeFalsy();
-        expect(Complex.fromCartesian(3, 2).multiply(-3).equals(Complex.fromCartesian(-9, -6))).toBeTruthy();
-        expect(Complex.fromCartesian(4, 0).multiply(5).equals(Complex.fromCartesian(19, 0))).toBeFalsy();
+        expect(Complex.fromCartesian(0, 0).multiply(Complex.fromCartesian(0, 0), false).equals(Complex.fromCartesian(0, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(1, 4).multiply(Complex.fromCartesian(2, 3), false).equals(Complex.fromCartesian(-10, 11))).toBeTruthy();
+        expect(Complex.fromCartesian(2, 0).multiply(Complex.fromCartesian(3, 2), false).equals(Complex.fromCartesian(0, 13))).toBeFalsy();
+        expect(Complex.fromCartesian(3, 2).multiply(-3, false).equals(Complex.fromCartesian(-9, -6))).toBeTruthy();
+        expect(Complex.fromCartesian(4, 0).multiply(5, false).equals(Complex.fromCartesian(19, 0))).toBeFalsy();
     });
 
     it ("should calculate the power of a complex number", () => {
-        expect(Complex.fromCartesian(0, 0).power(0).equals(Complex.fromCartesian(1, 0))).toBeTruthy();
-        expect(Complex.fromCartesian(1, 4).power(2).equals(Complex.fromCartesian(-15, 8))).toBeTruthy();
-        expect(Complex.fromCartesian(2, 3).power(3).equals(Complex.fromCartesian(-46, 9))).toBeTruthy();
-        expect(Complex.fromCartesian(3, 2).power(4).equals(Complex.fromCartesian(-119, 120))).toBeTruthy();
-        expect(Complex.fromCartesian(4, 1).power(5).equals(Complex.fromCartesian(404, 1121))).toBeTruthy();
+        expect(Complex.fromCartesian(0, 0).power(0, false).equals(Complex.fromCartesian(1, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(1, 4).power(2, false).equals(Complex.fromCartesian(-15, 8))).toBeTruthy();
+        expect(Complex.fromCartesian(2, 3).power(3, false).equals(Complex.fromCartesian(-46, 9))).toBeTruthy();
+        expect(Complex.fromCartesian(3, 2).power(4, false).equals(Complex.fromCartesian(-119, 120))).toBeTruthy();
+        expect(Complex.fromCartesian(4, 1).power(5, false).equals(Complex.fromCartesian(404, 1121))).toBeTruthy();
     });
 
     it ("should divide complex numbers", () => {
-        expect(Complex.fromCartesian(-10, 11).divide(Complex.fromCartesian(2, 3)).equals(Complex.fromCartesian(1, 4))).toBeTruthy();
-        expect(Complex.fromCartesian(0, 13).divide(Complex.fromCartesian(3, 2)).equals(Complex.fromCartesian(2, 3))).toBeTruthy();
-        expect(Complex.fromCartesian(10, 11).divide(Complex.fromCartesian(4, 1)).equals(Complex.fromCartesian(3, 2))).toBeTruthy();
-        expect(Complex.fromCartesian(0, 16).divide(Complex.fromCartesian(1, 4)).equals(Complex.fromCartesian(4, 1))).toBeFalsy();
-        expect(Complex.fromCartesian(8, 0).divide(4).equals(Complex.fromCartesian(2, 0))).toBeTruthy();
-        expect(Complex.fromCartesian(0, 8).divide(Complex.fromCartesian(0, 4)).equals(Complex.fromCartesian(2, 0))).toBeTruthy();
-        expect(Complex.fromCartesian(8, 0).divide(2).equals(Complex.fromCartesian(-4, 0))).toBeFalsy();
+        expect(Complex.fromCartesian(-10, 11).divide(Complex.fromCartesian(2, 3), false).equals(Complex.fromCartesian(1, 4))).toBeTruthy();
+        expect(Complex.fromCartesian(0, 13).divide(Complex.fromCartesian(3, 2), false).equals(Complex.fromCartesian(2, 3))).toBeTruthy();
+        expect(Complex.fromCartesian(10, 11).divide(Complex.fromCartesian(4, 1), false).equals(Complex.fromCartesian(3, 2))).toBeTruthy();
+        expect(Complex.fromCartesian(0, 16).divide(Complex.fromCartesian(1, 4), false).equals(Complex.fromCartesian(4, 1))).toBeFalsy();
+        expect(Complex.fromCartesian(8, 0).divide(4, false).equals(Complex.fromCartesian(2, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(0, 8).divide(Complex.fromCartesian(0, 4), false).equals(Complex.fromCartesian(2, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(8, 0).divide(2, false).equals(Complex.fromCartesian(-4, 0))).toBeFalsy();
     });
 
     it ("should calculate the reciprocal of a complex number", () => {
-        expect(Complex.fromCartesian(1, 0).reciprocal().equals(Complex.fromCartesian(1, 0))).toBeTruthy();
-        expect(Complex.fromCartesian(1, 4).reciprocal().equals(Complex.fromCartesian(1 / 17, -4 / 17))).toBeTruthy();
-        expect(Complex.fromCartesian(2, 3).reciprocal().equals(Complex.fromCartesian(2 / 13, -3 / 13))).toBeTruthy();
-        expect(Complex.fromCartesian(3, 2).reciprocal().equals(Complex.fromCartesian(3 / 13, -2 / 13))).toBeTruthy();
-        expect(Complex.fromCartesian(4, 1).reciprocal().equals(Complex.fromCartesian(4 / 17, -1 / 17))).toBeTruthy();
+        expect(Complex.fromCartesian(1, 0).reciprocal(false).equals(Complex.fromCartesian(1, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(1, 4).reciprocal(false).equals(Complex.fromCartesian(1 / 17, -4 / 17))).toBeTruthy();
+        expect(Complex.fromCartesian(2, 3).reciprocal(false).equals(Complex.fromCartesian(2 / 13, -3 / 13))).toBeTruthy();
+        expect(Complex.fromCartesian(3, 2).reciprocal(false).equals(Complex.fromCartesian(3 / 13, -2 / 13))).toBeTruthy();
+        expect(Complex.fromCartesian(4, 1).reciprocal(false).equals(Complex.fromCartesian(4 / 17, -1 / 17))).toBeTruthy();
     });
 
     it ("should calculate the absolute value of a complex number", () => {
@@ -93,5 +93,39 @@ describe("Complex Numbers Polar Form", () => {
         expect(Complex.fromPolar(Math.sqrt(2), -3 * Math.PI / 4).equals(Complex.fromCartesian(-1, -1))).toBeTruthy();
         expect(Complex.fromPolar(Math.sqrt(2), -Math.PI / 4).equals(Complex.fromCartesian(1, -1))).toBeTruthy();
         expect(Complex.fromPolar(Math.sqrt(2), 3 * Math.PI / 4).equals(Complex.fromCartesian(-1, 1))).toBeTruthy();
+    });
+
+    it ("should multiply complex numbers using polar form", () => {
+        expect(Complex.fromCartesian(0, 0).multiply(Complex.fromCartesian(0, 0)).equals(Complex.fromCartesian(0, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(1, 4).multiply(Complex.fromCartesian(2, 3)).equals(Complex.fromCartesian(-10, 11))).toBeTruthy();
+        expect(Complex.fromCartesian(2, 0).multiply(Complex.fromCartesian(3, 2)).equals(Complex.fromCartesian(0, 13))).toBeFalsy();
+        expect(Complex.fromCartesian(3, 2).multiply(-3).equals(Complex.fromCartesian(-9, -6))).toBeTruthy();
+        expect(Complex.fromCartesian(4, 0).multiply(5).equals(Complex.fromCartesian(19, 0))).toBeFalsy();
+    });
+
+    it ("should calculate the power of a complex number using polar form", () => {
+        expect(Complex.fromCartesian(0, 0).power(0).equals(Complex.fromCartesian(1, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(1, 4).power(2).equals(Complex.fromCartesian(-15, 8))).toBeTruthy();
+        expect(Complex.fromCartesian(2, 3).power(3).equals(Complex.fromCartesian(-46, 9))).toBeTruthy();
+        expect(Complex.fromCartesian(3, 2).power(4).equals(Complex.fromCartesian(-119, 120))).toBeTruthy();
+        expect(Complex.fromCartesian(4, 1).power(5).equals(Complex.fromCartesian(404, 1121))).toBeTruthy();
+    });
+
+    it ("should divide complex numbers using polar form", () => {
+        expect(Complex.fromCartesian(-10, 11).divide(Complex.fromCartesian(2, 3)).equals(Complex.fromCartesian(1, 4))).toBeTruthy();
+        expect(Complex.fromCartesian(0, 13).divide(Complex.fromCartesian(3, 2)).equals(Complex.fromCartesian(2, 3))).toBeTruthy();
+        expect(Complex.fromCartesian(10, 11).divide(Complex.fromCartesian(4, 1)).equals(Complex.fromCartesian(3, 2))).toBeTruthy();
+        expect(Complex.fromCartesian(0, 16).divide(Complex.fromCartesian(1, 4)).equals(Complex.fromCartesian(4, 1))).toBeFalsy();
+        expect(Complex.fromCartesian(8, 0).divide(4).equals(Complex.fromCartesian(2, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(0, 8).divide(Complex.fromCartesian(0, 4)).equals(Complex.fromCartesian(2, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(8, 0).divide(2).equals(Complex.fromCartesian(-4, 0))).toBeFalsy();
+    });
+
+    it ("should calculate the reciprocal of a complex number using polar form", () => {
+        expect(Complex.fromCartesian(1, 0).reciprocal().equals(Complex.fromCartesian(1, 0))).toBeTruthy();
+        expect(Complex.fromCartesian(1, 4).reciprocal().equals(Complex.fromCartesian(1 / 17, -4 / 17))).toBeTruthy();
+        expect(Complex.fromCartesian(2, 3).reciprocal().equals(Complex.fromCartesian(2 / 13, -3 / 13))).toBeTruthy();
+        expect(Complex.fromCartesian(3, 2).reciprocal().equals(Complex.fromCartesian(3 / 13, -2 / 13))).toBeTruthy();
+        expect(Complex.fromCartesian(4, 1).reciprocal().equals(Complex.fromCartesian(4 / 17, -1 / 17))).toBeTruthy();
     });
 });
