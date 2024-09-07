@@ -134,6 +134,82 @@ export class Polynomial {
             .reduce((acc, val) => acc.add(val), Complex.zero);
     }
 
+    /**
+     * Finds the roots of this polynomial, using the Durand-Kerner method.
+     * @param usePolar Whether to use the polar form to calculate the roots. Default is true.
+     * @param e The maximum error allowed. Default is e-9.
+     * @param iterations The maximum number of iterations allowed. Default is 10^6.
+     * @returns An array of complex numbers that are the roots of this polynomial.
+     */
+    findRoots(usePolar: boolean = true, e: number = 9, iterations: number = Math.pow(10, 6)) : Complex[] {
+        var n: number = this.degree();
+
+        // base cases
+
+        if (n <= 0){
+            return [];
+        } else if (n === 1){
+            return [this.polynomial.get(0)!.multiply(-1, usePolar)];
+        }
+
+        // not a base case
+
+        var guesses: Complex[] = Complex.one.roots(n);
+
+        var closeEnough: boolean;
+
+        var roots: Complex[] = [];
+
+        var current: Polynomial = Polynomial.fromMap(this.polynomial);
+
+        do {
+            // deflate
+
+            const newRoots: Complex[] = guesses.filter(guess => current.substitute(guess).equals(0));
+        
+            if (newRoots.length > 0) {
+                current = newRoots.reduce((deflated: Polynomial, root) => 
+                    deflated.divide(Polynomial.makeLinearMonic(root), usePolar), current);
+
+                n -= newRoots.length;
+
+                roots = roots.concat(newRoots);
+                
+                guesses = Complex.one.roots(n);
+
+                closeEnough = false;
+            } else {
+                // find new roots
+
+                var nextGuesses: Complex[] = guesses.map((guess, i) => 
+                    guess.subtract(
+                        current.substitute(guess, usePolar).divide(
+                            guesses.reduce((denominator, curr, j) => 
+                                i !== j ? denominator.multiply(guess.subtract(curr), usePolar) : denominator, Complex.one), usePolar)));
+                
+                closeEnough = nextGuesses.every((guess, i) => guess.equals(guesses[i], e));
+
+                guesses = nextGuesses;
+            }
+        } while (n > 1 && !closeEnough && --iterations);
+
+        if (n > 1){
+            return roots.concat(guesses);
+        } else if (n === 1){
+            return roots.concat([current.polynomial.get(0)!.multiply(-1, usePolar)]);
+        }
+
+        return roots;
+    }
+
+    static makeLinearMonic(x: Scalar, usePolar: boolean = true) { 
+        return Polynomial.fromArray([[1, 1], [0, Complex.fromScalar(x).multiply(-1, usePolar)]]);
+    }
+
+    static makeConstant(x: Scalar) {
+        return Polynomial.fromArray([[0, x]]);
+    }
+
     isZero(){
         return this.degree() === Number.NEGATIVE_INFINITY;
     }

@@ -1,5 +1,6 @@
 import { Complex, Scalar } from "./complex";
 import { EliminationIterator, RowOperation, RowOperationType, RowOperationResult } from "./elimination-iterator";
+import { Polynomial } from "./polynomial";
 
 export class Matrix {
     private matrix: Complex[][];
@@ -118,6 +119,35 @@ export class Matrix {
             acc.add(sign[i % 2].multiply(curr.multiply(this.minor(0, i).determinant(), usePolar))),
             Complex.zero);
     };
+
+    characteristicPolynomial(usePolar: boolean = true) : Polynomial {
+        if (!this.isSquare())
+            throw new Error("cannot calculate the characteristic polynomial of a non-square matrix");
+
+        if (this.rows === 1)
+            return Polynomial.makeLinearMonic(this.get(0, 0).multiply(-1, usePolar));
+
+        const polyMatrix = this.matrix.map((row, i) => row.map((cell, j) => 
+            i === j ? Polynomial.makeLinearMonic(cell) : Polynomial.makeConstant(cell.multiply(-1, usePolar))));
+
+        // calculate the determinant of the matrix of polynomials
+
+        const minor = (pmtx: Polynomial[][], row: number, column: number) : Polynomial[][] =>
+            pmtx.filter((_, i) => i !== row).map(row => row.filter((_, j) => j !== column));
+
+        const det = (pmtx: Polynomial[][]) : Polynomial => {
+            if (pmtx.length === 1)
+                return pmtx[0][0];
+
+            const sign = [Complex.one, Complex.minusOne];
+
+            return pmtx[0].reduce((acc, curr, i) => 
+                acc.add(curr.multiplyScalar(sign[i % 2], usePolar).multiply(det(minor(pmtx, 0, i)), usePolar)), 
+                Polynomial.makeConstant(0));
+        } 
+
+        return det(polyMatrix);
+    }
 
     inverse() : Matrix {
         if (!this.isSquare()){

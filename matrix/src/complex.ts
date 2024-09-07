@@ -135,7 +135,12 @@ export class Complex {
         const otherComplex = Complex.fromScalar(other);
 
         if (!usePolar){
-            return this.multiply(otherComplex.reciprocal(usePolar), usePolar);
+            return Complex.fromCartesian(
+                (this.real * otherComplex.real + this.imaginary * otherComplex.imaginary) / 
+                    (Math.pow(otherComplex.real, 2) + Math.pow(otherComplex.imaginary, 2)),
+                (this.imaginary * otherComplex.real - this.real * otherComplex.imaginary) / 
+                    (Math.pow(otherComplex.real, 2) + Math.pow(otherComplex.imaginary, 2))
+            );
         }
         
         return Complex.fromPolar(this.r / otherComplex.r, this.theta - otherComplex.theta);
@@ -147,9 +152,8 @@ export class Complex {
      */
     reciprocal(usePolar: boolean = true) : Complex {
         if (!usePolar){
-            const denominator = Math.pow(this.real, 2) + Math.pow(this.imaginary, 2);
-
-            return this.conjugate().multiply(1 / denominator, usePolar);
+            return Complex.fromCartesian(this.real / (Math.pow(this.real, 2) + Math.pow(this.imaginary, 2)),
+                -1 * this.imaginary / (Math.pow(this.real, 2) + Math.pow(this.imaginary, 2)));
         }
 
         return Complex.fromPolar(1 / this._r, -1 * this._t);
@@ -178,6 +182,11 @@ export class Complex {
         return Complex.fromPolar(Math.pow(this._r, n), n * this._t);
     }
 
+    roots(n: number) : Complex[]{
+        return Array.from({ length: n }, (_, k) => 
+            Complex.fromPolar(Math.pow(this.r, 1/n), (this.theta + 2 * k * Math.PI) / n));
+    }
+
     // other operations
 
     /** @returns The complex conjugate of this complex number. */
@@ -190,11 +199,17 @@ export class Complex {
         return this._r;
     }
 
-    equals(other: Scalar) : boolean {
+    /**
+     * Compares this complex number to another complex number.
+     * @param other the other complex number to compare.
+     * @param e the precision.
+     * @returns true if the real and imaginary parts of this complex number are equal to the real and imaginary parts of the other complex number, false otherwise. 
+     */
+    equals(other: Scalar, e: number = epsilonPow) : boolean {
         const otherComplex = Complex.fromScalar(other);
         
-        return this.real.toPrecision(epsilonPow) == otherComplex.real.toPrecision(epsilonPow) && 
-            this.imaginary.toPrecision(epsilonPow) == otherComplex.imaginary.toPrecision(epsilonPow);
+        return this.real.toPrecision(e) == otherComplex.real.toPrecision(e) && 
+            this.imaginary.toPrecision(e) == otherComplex.imaginary.toPrecision(e);
     }
 
     // properties
