@@ -306,6 +306,85 @@ export class Matrix {
         operations.forEach(op => this.rowOperation(op, usePolar));
     }
 
+    solveHomogenousLinearSystem(usePolar: boolean = true) : [number, Complex[]][] {
+        return this.solveLinearSystem(new Matrix([Array.from({ length: this.columns }, _ => Complex.zero)]).transpose(), usePolar);
+    }
+
+    solveLinearSystem(sol: Matrix, usePolar: boolean = true) : [number, Complex[]][]{
+        if (sol.rows !== this.columns){
+            throw new Error("incorrect size of solutions vector");
+        }
+
+        // first, reduce
+
+        const it = this.RREFIterator(usePolar);
+
+        const b = new Matrix(sol.matrix);
+
+        for (const m of it){
+            b.rowOperation(m.operation, usePolar);
+        }
+
+        const A: Matrix = (it.next().value as RowOperationResult).matrix;
+
+        // check for consistency
+
+        if (A.matrix.some((row, i) => !(b.get(i, 0).isZero()) && row.every(cell => cell.isZero()))){
+            return [];
+        }
+
+        const bound: number[] = [];
+
+        for (let i = 0; i < A.rows; i++){
+            // find the first 1
+
+            const first = A.getRow(i).findIndex(item => item.equals(1));
+
+            if (first < 0){
+                break;
+            }
+
+            bound.push(first);
+        }
+
+        const res = Array.from({ length: A.columns }, (_, i) => {
+            const index = bound.indexOf(i);
+
+            if (index < 0){
+                // free variable
+                const row = Array.from({ length: A.columns }, _ => Complex.zero);
+
+                row[i] = Complex.one;
+
+                return row;
+            }
+
+            // bound variable
+
+            const row = A.getRow(index).map(c => c.multiply(-1, usePolar));
+
+            row[i] = Complex.zero;
+
+            return row;
+        });
+
+        const vectors = new Matrix(res);
+
+        const solution: any[] = [[0, b.getColumn(0).concat(Array.from({ length: vectors.columns - b.rows }, _ => Complex.zero))]];
+
+        for (let i = 0; i < vectors.columns; i++){
+            const column = vectors.getColumn(i);
+
+            if (column.some(item => ! item.isZero())){
+                // not a zero vector
+
+                solution.push([i + 1, column]);
+            }
+        }
+
+        return solution;
+    }
+
     // fields
 
     isReal() : boolean {
