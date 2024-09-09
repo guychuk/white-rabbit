@@ -201,4 +201,43 @@ describe("Matrix Types", () => {
             [Complex.fromCartesian(0, 0), Complex.fromCartesian(1, 1)]
         ]).isIdentity()).toBeFalsy();
     });
+
+    it ("should check if a matrix is invertible", () => {
+        expect(new Matrix([
+            [1, 0],
+            [0, 1]
+        ]).isInvertible()).toBeTruthy();
+
+        expect(new Matrix([
+            [1, 2],
+            [3, 4]
+        ]).isInvertible()).toBeTruthy();
+
+        expect(new Matrix([
+            [1, 2],
+            [2, 4]
+        ]).isInvertible()).toBeFalsy();
+
+        expect(new Matrix([
+            [Complex.fromCartesian(1, 1), Complex.fromCartesian(0, 0)],
+            [Complex.fromCartesian(0, 0), Complex.fromCartesian(1, 1)]
+        ]).isInvertible()).toBeTruthy();
+
+        expect(new Matrix([
+            [Complex.fromCartesian(0, 1), Complex.fromCartesian(0, 0)],
+            [Complex.fromCartesian(0, 0), Complex.fromCartesian(0, 0)]
+        ]).isInvertible()).toBeFalsy();
+    });
+
+    it ("should check if a matrix is normal", () => {
+        expect(new Matrix([
+            [1, 2],
+            [3, 4]
+        ]).isNormal()).toBeFalsy();
+
+        expect(new Matrix([
+            [1, 2],
+            [2, 4]
+        ]).isNormal()).toBeTruthy();
+    });
 });

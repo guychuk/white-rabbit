@@ -121,4 +121,27 @@ describe('Polynomial', () => {
         const polynomial = Polynomial.fromArray(coefficients);
         expect(polynomial.degree()).toBe(2);
     });
+
+    it ("should find the roots of a real polynomial", () => {
+        const p = Polynomial.makeLinearMonic(1).multiply(Polynomial.makeLinearMonic(2)).multiply(Polynomial.makeLinearMonic(3));
+
+        const roots = p.findRoots();
+
+        expect(roots.length).toBe(3);
+
+        expect(roots.findIndex(i => i.equals(1))).not.toBe(-1);
+        expect(roots.findIndex(i => i.equals(2))).not.toBe(-1);
+        expect(roots.findIndex(i => i.equals(3))).not.toBe(-1);
+    });
+
+    it ("should find the roots of a complex polynomial", () => {
+        const p = Polynomial.makeLinearMonic(1).multiply(Polynomial.makeLinearMonic(Complex.fromCartesian(1, 1))).multiply(Polynomial.makeLinearMonic(1));
+
+        const roots = p.findRoots();
+
+        expect(roots.length).toBe(3);
+
+        expect(roots.findIndex(i => i.equals(1))).not.toBe(-1);
+        expect(roots.findIndex(i => i.equals(Complex.fromCartesian(1, 1)))).not.toBe(-1);
+    });
 });

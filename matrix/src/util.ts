@@ -14,8 +14,8 @@ export function round(num: number, precision: number = 12, epsilon: number = 1e-
     return rounded;
 }
 
-export function printLinearSystemSolutions(sol: [number, Complex[]][]) {
-    console.log(`(${sol[0][1].map(c => c.toString()).join(", ")})` + (sol.length === 1 ? "" : " +"));
-
-    console.log(sol.slice(1).map(e => `x_${e[0]} (${e[1].map(c => c.toString()).join(", ")})`).join(" +\n"));
+export function removeDuplicates<T>(arr: T[], comp: (a: T, b: T) => boolean){
+    // keep only those elements whose first occurrence is themselves
+    return arr.filter((item, i) => 
+        i === arr.findIndex((other) => comp(item, other)));
 }

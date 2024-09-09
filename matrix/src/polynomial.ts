@@ -1,5 +1,7 @@
 import { Complex, Scalar } from "./complex";
 
+// TODO: try to find roots in a more precise way
+
 export class Polynomial {
     polynomial: Map<number, Complex>;  // Map from power to coefficient
 
@@ -137,11 +139,12 @@ export class Polynomial {
     /**
      * Finds the roots of this polynomial, using the Durand-Kerner method.
      * @param usePolar Whether to use the polar form to calculate the roots. Default is true.
+     * @param [round=3] How many digits after the decimal point should be considered.
      * @param e The maximum error allowed. Default is e-9.
-     * @param iterations The maximum number of iterations allowed. Default is 10^6.
+     * @param iterations The maximum number of iterations allowed. Default is 100.
      * @returns An array of complex numbers that are the roots of this polynomial.
      */
-    findRoots(usePolar: boolean = true, e: number = 9, iterations: number = Math.pow(10, 6)) : Complex[] {
+    findRoots(usePolar: boolean = true, round: number = 3, e: number = 9, iterations: number = 100) : Complex[] {
         var n: number = this.degree();
 
         // base cases
@@ -194,12 +197,12 @@ export class Polynomial {
         } while (n > 1 && !closeEnough && --iterations);
 
         if (n > 1){
-            return roots.concat(guesses);
+            return roots.concat(guesses).map(guess => guess.toRound(round));
         } else if (n === 1){
-            return roots.concat([current.polynomial.get(0)!.multiply(-1, usePolar)]);
+            return roots.concat([current.polynomial.get(0)!.multiply(-1, usePolar)]).map(guess => guess.toRound(round));
         }
 
-        return roots;
+        return roots.map(guess => guess.toRound(round));
     }
 
     static makeLinearMonic(x: Scalar, usePolar: boolean = true) { 

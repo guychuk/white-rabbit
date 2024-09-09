@@ -1,6 +1,7 @@
 import { Complex, Scalar } from "./complex";
 import { EliminationIterator, RowOperation, RowOperationType, RowOperationResult } from "./elimination-iterator";
 import { Polynomial } from "./polynomial";
+import { removeDuplicates } from "./util";
 
 export class Matrix {
     private matrix: Complex[][];
@@ -67,6 +68,10 @@ export class Matrix {
         return Matrix.scalar(0, size);
     }
 
+    static diag(items: Scalar[]) : Matrix{
+        return new Matrix(items.map((item, i) => items.map((_, j) => i === j ? item : 0)));
+    }
+
     sameSize(other: Matrix) {
         return this.rows === other.rows && this.columns === other.columns;
     }
@@ -96,6 +101,7 @@ export class Matrix {
 
         return this.matrix.reduce((acc, row, index) => acc.add(row[index]), Complex.zero);
     }
+
 
     minor(row: number, column: number) : Matrix {
         return new Matrix(this.matrix.filter((_, ri) => ri !== row).map(row => row.filter((_, ci) => ci !== column)));
@@ -147,6 +153,55 @@ export class Matrix {
         } 
 
         return det(polyMatrix);
+    }
+
+    eigenValues(usePolar: boolean = true) : Complex[]{
+        return this.characteristicPolynomial().findRoots(usePolar, 3, 6);
+    }
+
+    /**
+     * Diagonalize the matrix.
+     * @param usePolar 
+     * @returns two matrices U and D s.t. U is invertible, D is diagonal and M = UDU^-1.
+     */
+    diagonalize(usePolar: boolean = true) : [Matrix, Matrix] {
+        if (!this.isSquare())
+            throw new Error("cannot diagonalize a non-square matrix");
+
+        if (this.isDiagonal()){
+            return [Matrix.identity(this.rows), this.copy()];
+        }
+
+        const polyMatrix = this.matrix.map((row, i) => row.map((cell, j) => 
+            i === j ? Polynomial.makeLinearMonic(cell) : Polynomial.makeConstant(cell.multiply(-1, usePolar))));
+
+        const eig = this.eigenValues();
+
+        const eigSet = removeDuplicates(eig, (a, b) => a.equals(b));
+
+        const U: Complex[][] = [];
+
+        // find the nullity space for each eigenvalue and check if Am == Gm
+        
+        for (let val of eigSet){
+            const algebraic = eig.filter(e => e.equals(val)).length;
+
+            // substitute
+
+            const mtx = new Matrix(polyMatrix.map(row => row.map(cell => cell.substitute(val, usePolar))));
+
+            const nullity = mtx.solveHomogenousLinearSystem(usePolar);
+
+            const geometric = nullity.length - 1;
+
+            if (geometric < algebraic){
+                throw new Error("not diagonalizable");
+            }
+
+            U.push(...nullity.slice(1).map(pair => pair[1]));
+        }
+
+        return [new Matrix(U).transpose(), Matrix.diag(eig)];
     }
 
     inverse() : Matrix {
@@ -221,7 +276,17 @@ export class Matrix {
         if (n < 0)
             throw new Error("cannot raise a matrix to a negative power");
 
-        return Array.from({length: n - 1}, () => this).reduce((acc: Matrix, _) => acc.multiply(this, usePolar), this);
+        if (this.isDiagonal()){
+            return new Matrix(this.matrix.map((row, i) => row.map((cell, j) => i === j ? cell.power(n, usePolar) : 0)));
+        }
+
+        try {
+            const [U, D] = this.diagonalize(usePolar);
+
+            return U.multiply(D.power(n, usePolar).multiply(U.inverse(), usePolar), usePolar);
+        } finally {
+            return Array.from({length: n - 1}, () => this).reduce((acc: Matrix, _) => acc.multiply(this, usePolar), this);
+        }
     }
 
     // row operations
@@ -311,7 +376,7 @@ export class Matrix {
     }
 
     solveLinearSystem(sol: Matrix, usePolar: boolean = true) : [number, Complex[]][]{
-        if (sol.rows !== this.columns){
+        if (sol.rows !== this.rows || sol.columns !== 1){
             throw new Error("incorrect size of solutions vector");
         }
 
@@ -385,6 +450,20 @@ export class Matrix {
         return solution;
     }
 
+    rank(usePolar: boolean = true) : number {
+        const reduced = this.copy();
+
+        reduced.reduceToRREF(usePolar);
+
+        for (let i = 0; i < this.rows; i++){
+            if (this.getRow(i).every(num => num.isZero())){
+                return i;
+            }
+        }
+
+        return this.rows;
+    }
+
     // fields
 
     isReal() : boolean {
@@ -438,6 +517,10 @@ export class Matrix {
         return this.equals(Matrix.identity(this.rows));
     }
 
+    isNormal() : boolean {
+        return this.multiply(this.conjugateTranspose()).equals(this.conjugateTranspose().multiply(this));
+    }
+
     // helper methods
 
     copy() : Matrix {
@@ -466,4 +549,10 @@ export class Matrix {
 
         return n > 0 && mtx.every(row => row.length === n);
     }
+}
+
+export function printLinearSystemSolutions(sol: [number, Complex[]][]) {
+    console.log(`(${sol[0][1].map(c => c.toString()).join(", ")})` + (sol.length === 1 ? "" : " +"));
+
+    console.log(sol.slice(1).map(e => `x_${e[0]} (${e[1].map(c => c.toString()).join(", ")})`).join(" +\n"));
 }
