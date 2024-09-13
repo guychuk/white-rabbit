@@ -1,85 +1,87 @@
-import { round } from "./util";
+import { roundNum } from "./util";
 
 export type Scalar = number | Complex;
 
 /** The number of decimal places to round the real and imaginary parts of a complex number to. */
-const precision: number = 12;
-const epsilonPow: number = 9;
-const epsilon: number = Number("1e-" + epsilonPow);
+const comparisonPrecision: number = 12;
+const storagePrecision: number = 16;
 
 /**
  * A class representing a complex number.
  * @note The class is immutable.
  */
 export class Complex {
-    private _re: number;
-    private _im: number;
+    private _real: number;
+    private _imag: number;
 
     // polar form (not fixed!)
-    private _r: number;
-    private _t: number; // theta
+    private _rad: number;
+    private _theta: number;
 
-    private constructor(real: number, imaginary: number) {
-        this._re = round(real, precision, epsilon);
-        this._im = round(imaginary, precision, epsilon);
+    constructor(c: [number, number], polarForm: boolean = false) {
+        if (polarForm){
+            const [r, t] = c;
 
-        this._r = Math.sqrt(Math.pow(this._re, 2) + Math.pow(this._im, 2));
-        this._t = Math.atan2(this._im, this._re);
+            this._rad = roundNum(r, storagePrecision);
+            this._theta = roundNum(t, storagePrecision);
+
+            this._real = roundNum(r * Math.cos(t), storagePrecision);
+            this._imag = roundNum(r * Math.sin(t), storagePrecision);
+        } else {
+            const [re, im] = c;
+
+            this._real = re;
+            this._imag = im;
+
+            this._rad = roundNum(Math.sqrt(Math.pow(re, 2) + Math.pow(im, 2)), storagePrecision);
+            this._theta = roundNum(Math.atan2(im, re), storagePrecision);
+        }
     }
 
     // makers
 
-    static fromCartesian(real: number, imaginary: number) : Complex {
-        return new Complex(real, imaginary);
-    }
-
-    static fromPolar(r: number, theta: number) : Complex {
-        const c = round(Math.cos(theta), precision);
-        const s = round(Math.sin(theta), precision);
-
-        return Complex.fromCartesian(r * c, r * s);
-    }
-
     static fromReal(n: number) : Complex {
-        return Complex.fromCartesian(n, 0);
+        return new Complex([n, 0]);
     }
 
     static fromScalar(x: Scalar) : Complex {
         return x instanceof Complex ? x : Complex.fromReal(x);
     }
 
-    static readonly one = Complex.fromCartesian(1, 0);
+    static readonly one = new Complex([1, 0]);
 
-    static readonly zero = Complex.fromCartesian(0, 0);
+    static readonly zero = new Complex([0, 0]);
 
-    static readonly minusOne = Complex.fromCartesian(-1, 0);
+    static readonly negOne = new Complex([-1, 0]);
 
-    static readonly i = Complex.fromCartesian(0, 1);
+    static readonly i = new Complex([0, 1]);
+
+    static readonly negi = new Complex([0, -1]);
 
     // getters
     
     get real() : number {
-        return this._re;
+        return this._real;
     }
 
     get imaginary() : number {
-        return this._im;
+        return this._imag;
     }
 
     get r() : number {
-        return this._r;
+        return this._rad;
     }
 
     get theta() : number {
-        return this._t;
+        return this._theta;
     }
 
     get cartesian() : [number, number] {
-        return [this._re, this._im];
+        return [this._real, this._imag];
     }
 
     get polar() : [number, number] {
-        return [this._r, this._t];
+        return [this._rad, this._theta];
     }
 
     // arithmetic operations
@@ -92,7 +94,7 @@ export class Complex {
     add(other: Scalar) : Complex {
         const otherComplex = Complex.fromScalar(other);
 
-        return Complex.fromCartesian(this.real + otherComplex.real, this.imaginary + otherComplex.imaginary);
+        return new Complex([this.real + otherComplex.real, this.imaginary + otherComplex.imaginary]);
     }
 
     /**
@@ -103,7 +105,7 @@ export class Complex {
     subtract(other: Scalar) : Complex {
         const otherComplex = Complex.fromScalar(other);
         
-        return Complex.fromCartesian(this.real - otherComplex.real, this.imaginary - otherComplex.imaginary);
+        return new Complex([this.real - otherComplex.real, this.imaginary - otherComplex.imaginary]);
     }
 
     /**
@@ -116,13 +118,11 @@ export class Complex {
         const otherComplex = Complex.fromScalar(other);
 
         if (!usePolar){
-            return Complex.fromCartesian(
-                this.real * otherComplex.real - this.imaginary * otherComplex.imaginary, 
-                this.real * otherComplex.imaginary + this.imaginary * otherComplex.real
-            );
+            return new Complex([this.real * otherComplex.real - this.imaginary * otherComplex.imaginary, 
+                this.real * otherComplex.imaginary + this.imaginary * otherComplex.real]);
         }
 
-        return Complex.fromPolar(this.r * otherComplex.r, this.theta + otherComplex.theta);
+        return new Complex([this.r * otherComplex.r, this.theta + otherComplex.theta], true);
     }
 
     /**
@@ -135,15 +135,15 @@ export class Complex {
         const otherComplex = Complex.fromScalar(other);
 
         if (!usePolar){
-            return Complex.fromCartesian(
+            return new Complex([
                 (this.real * otherComplex.real + this.imaginary * otherComplex.imaginary) / 
                     (Math.pow(otherComplex.real, 2) + Math.pow(otherComplex.imaginary, 2)),
                 (this.imaginary * otherComplex.real - this.real * otherComplex.imaginary) / 
                     (Math.pow(otherComplex.real, 2) + Math.pow(otherComplex.imaginary, 2))
-            );
+            ]);
         }
         
-        return Complex.fromPolar(this.r / otherComplex.r, this.theta - otherComplex.theta);
+        return new Complex([this.r / otherComplex.r, this.theta - otherComplex.theta], true);
     }
 
     /** 
@@ -152,11 +152,11 @@ export class Complex {
      */
     reciprocal(usePolar: boolean = true) : Complex {
         if (!usePolar){
-            return Complex.fromCartesian(this.real / (Math.pow(this.real, 2) + Math.pow(this.imaginary, 2)),
-                -1 * this.imaginary / (Math.pow(this.real, 2) + Math.pow(this.imaginary, 2)));
+            return new Complex([this.real / (Math.pow(this.real, 2) + Math.pow(this.imaginary, 2)),
+                -1 * this.imaginary / (Math.pow(this.real, 2) + Math.pow(this.imaginary, 2))]);
         }
 
-        return Complex.fromPolar(1 / this._r, -1 * this._t);
+        return new Complex([1 / this._rad, -1 * this._theta], true);
     }
 
     /**
@@ -179,57 +179,79 @@ export class Complex {
             return n > 0 ? result : result.reciprocal(usePolar);
         }
 
-        return Complex.fromPolar(Math.pow(this._r, n), n * this._t);
+        return new Complex([Math.pow(this._rad, n), n * this._theta], true);
     }
 
     roots(n: number) : Complex[]{
         return Array.from({ length: n }, (_, k) => 
-            Complex.fromPolar(Math.pow(this.r, 1/n), (this.theta + 2 * k * Math.PI) / n));
+            new Complex([Math.pow(this.r, 1/n), (this.theta + 2 * k * Math.PI) / n], true));
     }
 
     // other operations
 
     /** @returns The complex conjugate of this complex number. */
     conjugate() : Complex {
-        return Complex.fromCartesian(this._re, -1 * this._im);
+        return new Complex([this._real, -1 * this._imag]);
     }
 
     /** @returns The absolute value of this complex number. */
     absoluteValue() : number {
-        return this._r;
+        return this._rad;
     }
 
     /**
      * Compares this complex number to another complex number.
      * @param other the other complex number to compare.
-     * @param e the precision.
+     * @param p the precision.
      * @returns true if the real and imaginary parts of this complex number are equal to the real and imaginary parts of the other complex number, false otherwise. 
      */
-    equals(other: Scalar, e: number = epsilonPow) : boolean {
+    equals(other: Scalar, p: number = comparisonPrecision) : boolean {
         const otherComplex = Complex.fromScalar(other);
         
-        return this.real.toPrecision(e) == otherComplex.real.toPrecision(e) && 
-            this.imaginary.toPrecision(e) == otherComplex.imaginary.toPrecision(e);
+        return roundNum(this.real, p) === roundNum(otherComplex.real, p) && 
+        roundNum(this.imaginary, p) === roundNum(otherComplex.imaginary, p);
     }
 
     // properties
 
     isReal() : boolean {
-        return this._im === 0;
+        return roundNum(this.imaginary, comparisonPrecision) === 0;
     }
 
     isZero() : boolean {
-        return this._r === 0;
+        return this.equals(0);
     }
 
     isPureImaginary() : boolean {
-        return this._re === 0;
+        return roundNum(this.real, comparisonPrecision) === 0;
     }
 
     // others
 
     toString() : string {
-        return `${this._re} + ${this._im}i`;
+        if (this.isReal()){
+            return this.real.toString();
+        }
+
+        if (this.isPureImaginary()){
+            if (this.equals(Complex.i))
+                return 'i'
+            if (this.equals(Complex.negi))
+                return '-i'
+
+            return `${this.imaginary}i`;
+        }
+
+        if (roundNum(this.imaginary, comparisonPrecision) === 1){
+            return `${this.real} + i`;
+        } else if (roundNum(this.imaginary, comparisonPrecision) === -1){
+            return `${this.real} - i`;
+        }
+
+        if (this.imaginary < 0)
+            return `${this.real} - ${-this.imaginary}i`
+
+        return `${this.real} + ${-this.imaginary}i`
     }
 
     /**
@@ -237,7 +259,7 @@ export class Complex {
      * @param digits The number of decimal places to round to.
      * @returns A new complex number with the real and imaginary parts rounded to the specified number of decimal places.
      */
-    toRound(digits: number = precision) : Complex {
-        return Complex.fromCartesian(round(this._re, digits,epsilon), round(this._im, digits,epsilon));
+    toFixed(digits: number = comparisonPrecision) : Complex {
+        return new Complex([roundNum(this._real, digits), roundNum(this._imag, digits)]);
     }
 }

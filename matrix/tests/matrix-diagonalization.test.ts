@@ -39,8 +39,6 @@ describe("Real Matrix Diagonalization", () => {
 
         const [U, D] = m.diagonalize();
 
-        console.log("4x4")
-
         expect(D.isDiagonal()).toBeTruthy();
         expect(U.isInvertible()).toBeTruthy();
         expect(U.multiply(D.multiply(U.inverse())).equals(m)).toBeTruthy();
@@ -52,8 +50,6 @@ describe("Real Matrix Diagonalization", () => {
             [0,  2]
         ]);
 
-        console.log("non-diagonalizable")
-
         expect(() => m.diagonalize()).toThrow();
     });
 });
@@ -61,8 +57,8 @@ describe("Real Matrix Diagonalization", () => {
 describe("Complex Matrix Diagonalization", () => {
     it ("should diagonalize a 2x2 matrix", () => {        
         const m = new Matrix([
-            [Complex.fromCartesian(2, 1), 1],
-            [0, Complex.fromCartesian(3, -1)]
+            [new Complex([2, 1]), 1],
+            [0, new Complex([3, -1])]
         ]);
 
         const [U, D] = m.diagonalize();
@@ -74,9 +70,9 @@ describe("Complex Matrix Diagonalization", () => {
 
     it ("should diagonalize a 3x3 matrix", () => {
         const m = new Matrix([
-            [Complex.fromCartesian(1, 2), 0, 0],
-            [0, Complex.fromCartesian(-1, 1), 1],
-            [0, 0, Complex.fromCartesian(2, -2)]
+            [new Complex([1, 2]), 0, 0],
+            [0, new Complex([-1, 1]), 1],
+            [0, 0, new Complex([2, -2])]
         ]);
 
         const [U, D] = m.diagonalize();
@@ -89,14 +85,12 @@ describe("Complex Matrix Diagonalization", () => {
     it ("should diagonalize a 4x4 matrix", () => {
         const m = new Matrix([
             [3, 1, 0, 0],
-            [0, Complex.fromCartesian(-2, 1), 0, 0],
-            [0, 0, Complex.fromCartesian(1, -1), 0],
-            [0, 0, 0, Complex.fromCartesian(4, 2)]
+            [0, new Complex([-2, 1]), 0, 0],
+            [0, 0, new Complex([1, -1]), 0],
+            [0, 0, 0, new Complex([4, 2])]
         ]);
 
         const [U, D] = m.diagonalize();
-
-        console.log("4x4")
 
         expect(D.isDiagonal()).toBeTruthy();
         expect(U.isInvertible()).toBeTruthy();
@@ -105,11 +99,9 @@ describe("Complex Matrix Diagonalization", () => {
 
     it ("should throw an error when trying to diagonalize a non-diagonalizable matrix", () => {
         const m = new Matrix([
-            [2,  Complex.fromCartesian(0, 1)],
+            [2,  new Complex([0, 1])],
             [0,  2]
         ]);
-
-        console.log("non-diagonalizable")
 
         expect(() => m.diagonalize()).toThrow();
     });

@@ -21,43 +21,43 @@ describe("Basic Matrix Operations", () => {
         ]))).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
         ]).transpose().equals(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(3, 3)],
-            [Complex.fromCartesian(2, 2), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([3, 3])],
+            [new Complex([2, 2]), new Complex([4, 4])]
         ]))).toBeTruthy();
     });
 
     it ("should calculate the conjugate of matrices", () => {
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
         ]).conjugate().equals(new Matrix([
-            [Complex.fromCartesian(1, -1), Complex.fromCartesian(2, -2)],
-            [Complex.fromCartesian(3, -3), Complex.fromCartesian(4, -4)]
+            [new Complex([1, -1]), new Complex([2, -2])],
+            [new Complex([3, -3]), new Complex([4, -4])]
         ]))).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(0, 1)]
+            [new Complex([0, 1])]
         ]).conjugate().equals(new Matrix([
-            [Complex.fromCartesian(0, -1)]
+            [new Complex([0, -1])]
         ]))).toBeTruthy();
     });
 
     it ("should calculate the conjugate transpose of matrices", () => {
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
         ]).conjugateTranspose().equals(new Matrix([
-            [Complex.fromCartesian(1, -1), Complex.fromCartesian(3, -3)],
-            [Complex.fromCartesian(2, -2), Complex.fromCartesian(4, -4)]
+            [new Complex([1, -1]), new Complex([3, -3])],
+            [new Complex([2, -2]), new Complex([4, -4])]
         ]))).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(0, 1)]
+            [new Complex([0, 1])]
         ]).conjugateTranspose().equals(new Matrix([
-            [Complex.fromCartesian(0, -1)]
+            [new Complex([0, -1])]
         ]))).toBeTruthy();
     });
 
@@ -68,15 +68,15 @@ describe("Basic Matrix Operations", () => {
         ]).trace().equals(5)).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
-        ]).trace().equals(Complex.fromCartesian(5, 5))).toBeTruthy();
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
+        ]).trace().equals(new Complex([5, 5]))).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2), Complex.fromCartesian(3, 3)],
-            [Complex.fromCartesian(4, 4), Complex.fromCartesian(5, 5), Complex.fromCartesian(6, 6)],
-            [Complex.fromCartesian(7, 7), Complex.fromCartesian(8, 8), Complex.fromCartesian(9, 9)]
-        ]).trace().equals(Complex.fromCartesian(15, 15))).toBeTruthy();
+            [new Complex([1, 1]), new Complex([2, 2]), new Complex([3, 3])],
+            [new Complex([4, 4]), new Complex([5, 5]), new Complex([6, 6])],
+            [new Complex([7, 7]), new Complex([8, 8]), new Complex([9, 9])]
+        ]).trace().equals(new Complex([15, 15]))).toBeTruthy();
     });
 
     it ("should calculate the minor of matrices", () => {
@@ -106,14 +106,14 @@ describe("Basic Matrix Operations", () => {
         ]).determinant().equals(-2)).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
-        ]).determinant().equals(Complex.fromCartesian(0, -4))).toBeTruthy();
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
+        ]).determinant().equals(new Complex([0, -4]))).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2), Complex.fromCartesian(3, 3)],
-            [Complex.fromCartesian(4, 4), Complex.fromCartesian(5, 5), Complex.fromCartesian(6, 6)],
-            [Complex.fromCartesian(7, 7), Complex.fromCartesian(8, 8), Complex.fromCartesian(9, 9)]
+            [new Complex([1, 1]), new Complex([2, 2]), new Complex([3, 3])],
+            [new Complex([4, 4]), new Complex([5, 5]), new Complex([6, 6])],
+            [new Complex([7, 7]), new Complex([8, 8]), new Complex([9, 9])]
         ]).determinant().equals(0)).toBeTruthy();
     });
 
@@ -127,17 +127,17 @@ describe("Basic Matrix Operations", () => {
         ]))).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
         ]).inverse().equals(new Matrix([
-            [Complex.fromCartesian(-1, 1), Complex.fromCartesian(1/2, -1/2)],
-            [Complex.fromCartesian(3/4, -3/4), Complex.fromCartesian(-1/4, 1/4)]
+            [new Complex([-1, 1]), new Complex([1/2, -1/2])],
+            [new Complex([3/4, -3/4]), new Complex([-1/4, 1/4])]
         ]))).toBeTruthy();
 
         expect(() => new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2), Complex.fromCartesian(3, 3)],
-            [Complex.fromCartesian(4, 4), Complex.fromCartesian(5, 5), Complex.fromCartesian(6, 6)],
-            [Complex.fromCartesian(7, 7), Complex.fromCartesian(8, 8), Complex.fromCartesian(9, 9)]
+            [new Complex([1, 1]), new Complex([2, 2]), new Complex([3, 3])],
+            [new Complex([4, 4]), new Complex([5, 5]), new Complex([6, 6])],
+            [new Complex([7, 7]), new Complex([8, 8]), new Complex([9, 9])]
         ]).inverse()).toThrow();
     });
 
@@ -152,8 +152,8 @@ describe("Basic Matrix Operations", () => {
         expect(A.multiply(AInverse).isIdentity()).toBeTruthy();
 
         const B = new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
         ]);
 
         const BInverse = B.inverse();

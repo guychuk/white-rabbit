@@ -119,10 +119,10 @@ export class Matrix {
         if (this.rows === 1)
             return this.get(0, 0);
 
-        const sign = [Complex.one, Complex.minusOne];
+        const sign = [1, -1];
 
         return this.getRow(0).reduce((acc, curr, i) => 
-            acc.add(sign[i % 2].multiply(curr.multiply(this.minor(0, i).determinant(), usePolar))),
+            acc.add(curr.multiply(this.minor(0, i).determinant()).multiply(sign[i % 2], usePolar)),
             Complex.zero);
     };
 
@@ -145,7 +145,7 @@ export class Matrix {
             if (pmtx.length === 1)
                 return pmtx[0][0];
 
-            const sign = [Complex.one, Complex.minusOne];
+            const sign = [1, -1];
 
             return pmtx[0].reduce((acc, curr, i) => 
                 acc.add(curr.multiplyScalar(sign[i % 2], usePolar).multiply(det(minor(pmtx, 0, i)), usePolar)), 
@@ -198,7 +198,7 @@ export class Matrix {
                 throw new Error("not diagonalizable");
             }
 
-            U.push(...nullity.slice(1).map(pair => pair[1]));
+            U.push(...nullity.slice(1).map(pair => pair[1].getColumn(0)));
         }
 
         return [new Matrix(U).transpose(), Matrix.diag(eig)];
@@ -249,7 +249,7 @@ export class Matrix {
     }
 
     subtract(other: Matrix) : Matrix {
-        return this.add(other.multiplyByScalar(Complex.minusOne));
+        return this.add(other.multiplyByScalar(-1));
     }
 
     canMultiply(other: Matrix) : boolean {
@@ -371,11 +371,11 @@ export class Matrix {
         operations.forEach(op => this.rowOperation(op, usePolar));
     }
 
-    solveHomogenousLinearSystem(usePolar: boolean = true) : [number, Complex[]][] {
-        return this.solveLinearSystem(new Matrix([Array.from({ length: this.columns }, _ => Complex.zero)]).transpose(), usePolar);
+    solveHomogenousLinearSystem(usePolar: boolean = true) : [number, Matrix][] {
+        return this.solveLinearSystem(new Matrix([Array.from({ length: this.columns }, _ => 0)]).transpose(), usePolar);
     }
 
-    solveLinearSystem(sol: Matrix, usePolar: boolean = true) : [number, Complex[]][]{
+    solveLinearSystem(sol: Matrix, usePolar: boolean = true) : [number, Matrix][]{
         if (sol.rows !== this.rows || sol.columns !== 1){
             throw new Error("incorrect size of solutions vector");
         }
@@ -412,42 +412,44 @@ export class Matrix {
             bound.push(first);
         }
 
-        const res = Array.from({ length: A.columns }, (_, i) => {
+        const res: Scalar[][] = Array.from({ length: A.columns }, (_, i) => {
             const index = bound.indexOf(i);
 
             if (index < 0){
                 // free variable
-                const row = Array.from({ length: A.columns }, _ => Complex.zero);
+                const row = Array.from({ length: A.columns }, _ => 0);
 
-                row[i] = Complex.one;
+                row[i] = 1;
 
                 return row;
             }
 
             // bound variable
 
-            const row = A.getRow(index).map(c => c.multiply(-1, usePolar));
+            const row: Scalar[] = A.getRow(index).map(c => c.multiply(-1, usePolar));
 
-            row[i] = Complex.zero;
+            row[i] = 0;
 
             return row;
         });
 
         const vectors = new Matrix(res);
 
-        const solution: any[] = [[0, b.getColumn(0).concat(Array.from({ length: vectors.columns - b.rows }, _ => Complex.zero))]];
+        const paddedB = new Matrix([b.getColumn(0).concat(Array.from({ length: vectors.columns - b.rows }, _ => Complex.zero))]);
+
+        const bPair: [number, Matrix] = [0, paddedB];
+
+        const solution: [number, Matrix][] = [];
 
         for (let i = 0; i < vectors.columns; i++){
-            const column = vectors.getColumn(i);
+            const column = new Matrix([vectors.getColumn(i)]).transpose();
 
-            if (column.some(item => ! item.isZero())){
-                // not a zero vector
-
+            if (!column.isZeroVector()){
                 solution.push([i + 1, column]);
             }
         }
 
-        return solution;
+        return [bPair].concat(solution);
     }
 
     rank(usePolar: boolean = true) : number {
@@ -519,6 +521,23 @@ export class Matrix {
 
     isNormal() : boolean {
         return this.multiply(this.conjugateTranspose()).equals(this.conjugateTranspose().multiply(this));
+    }
+
+    isRowVector() : boolean {
+        return this.rows === 1;
+    }
+
+    isColumnVector() : boolean {
+        return this.columns === 1;
+    }
+
+    isVector() : boolean {
+        return this.isRowVector() || this.isColumnVector();
+    }
+
+    isZeroVector() : boolean {
+        return (this.isRowVector() && this.getRow(0).every(cell => cell.isZero())) || 
+            (this.isColumnVector() && this.getColumn(0).every(cell => cell.isZero()));
     }
 
     // helper methods

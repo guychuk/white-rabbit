@@ -2,7 +2,7 @@ import { Matrix } from "../src/matrix";
 import { Complex } from "../src/complex";
 
 describe("Matrix Types", () => {
-    it ("should check if a matrix is a square matrix", () => {
+    it("should check if a matrix is a square matrix", () => {
         expect(new Matrix([
             [1, 2],
             [3, 4]
@@ -14,17 +14,17 @@ describe("Matrix Types", () => {
         ]).isSquare()).toBeFalsy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
         ]).isSquare()).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2), Complex.fromCartesian(3, 3)],
-            [Complex.fromCartesian(4, 4), Complex.fromCartesian(5, 5), Complex.fromCartesian(6, 6)]
+            [new Complex([1, 1]), new Complex([2, 2]), new Complex([3, 3])],
+            [new Complex([4, 4]), new Complex([5, 5]), new Complex([6, 6])]
         ]).isSquare()).toBeFalsy();
     });
 
-    it ("should check if a matrix is symmetric", () => {
+    it("should check if a matrix is symmetric", () => {
         expect(new Matrix([
             [1, 2],
             [2, 1]
@@ -36,29 +36,29 @@ describe("Matrix Types", () => {
         ]).isSymmetric()).toBeFalsy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(2, 2), Complex.fromCartesian(1, 1)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([2, 2]), new Complex([1, 1])]
         ]).isSymmetric()).toBeFalsy();
     });
 
-    it ("should check if a matrix is skew symmetric", () => {
+    it("should check if a matrix is skew symmetric", () => {
         expect(new Matrix([
             [0, 2],
             [-2, 0]
         ]).isSkewSymmetric()).toBeTruthy();
-        
+
         expect(new Matrix([
             [1, 2],
             [3, 4]
         ]).isSkewSymmetric()).toBeFalsy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(0, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(-2, 2), Complex.fromCartesian(0, 1)]
+            [new Complex([0, 1]), new Complex([2, 2])],
+            [new Complex([-2, 2]), new Complex([0, 1])]
         ]).isSkewSymmetric()).toBeFalsy();
     });
 
-    it ("should check if a matrix is diagonal", () => {
+    it("should check if a matrix is diagonal", () => {
         expect(new Matrix([
             [1, 0],
             [0, 1]
@@ -70,15 +70,15 @@ describe("Matrix Types", () => {
         ]).isDiagonal()).toBeFalsy();
     });
 
-    it ("should check if a matrix is hermitian", () => {
+    it("should check if a matrix is hermitian", () => {
         expect(new Matrix([
-            [Complex.fromCartesian(1, 0), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(2, -2), Complex.fromCartesian(1, 0)]
+            [new Complex([1, 0]), new Complex([2, 2])],
+            [new Complex([2, -2]), new Complex([1, 0])]
         ]).isHermitian()).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 0), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(2, 2), Complex.fromCartesian(1, 0)]
+            [new Complex([1, 0]), new Complex([2, 2])],
+            [new Complex([2, 2]), new Complex([1, 0])]
         ]).isHermitian()).toBeFalsy();
 
         expect(new Matrix([
@@ -92,15 +92,15 @@ describe("Matrix Types", () => {
         ]).isHermitian()).toBeTruthy();
     });
 
-    it ("should check if a matrix is skew hermitian", () => {
+    it("should check if a matrix is skew hermitian", () => {
         expect(new Matrix([
-            [Complex.fromCartesian(0, 0), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(-2, 2), Complex.fromCartesian(0, 0)]
+            [new Complex([0, 0]), new Complex([2, 2])],
+            [new Complex([-2, 2]), new Complex([0, 0])]
         ]).isSkewHermitian()).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(0, 0), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(2, 2), Complex.fromCartesian(0, 0)]
+            [new Complex([0, 0]), new Complex([2, 2])],
+            [new Complex([2, 2]), new Complex([0, 0])]
         ]).isSkewHermitian()).toBeFalsy();
 
         expect(new Matrix([
@@ -114,7 +114,7 @@ describe("Matrix Types", () => {
         ]).isSkewHermitian()).toBeFalsy();
     });
 
-    it ("should check if a matrix is diagonal", () => {
+    it("should check if a matrix is diagonal", () => {
         expect(new Matrix([
             [1, 0],
             [0, 1]
@@ -126,17 +126,17 @@ describe("Matrix Types", () => {
         ]).isDiagonal()).toBeFalsy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(0, 0)],
-            [Complex.fromCartesian(0, 0), Complex.fromCartesian(1, 1)]
+            [new Complex([1, 1]), new Complex([0, 0])],
+            [new Complex([0, 0]), new Complex([1, 1])]
         ]).isDiagonal()).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(0, 0)],
-            [Complex.fromCartesian(0, 0), Complex.fromCartesian(1, 0)]
+            [new Complex([1, 1]), new Complex([0, 0])],
+            [new Complex([0, 0]), new Complex([1, 0])]
         ]).isDiagonal()).toBeTruthy();
     });
 
-    it ("should check if a matrix is upper triangular", () => {
+    it("should check if a matrix is upper triangular", () => {
         expect(new Matrix([
             [1, 2],
             [0, 4]
@@ -148,17 +148,17 @@ describe("Matrix Types", () => {
         ]).isUpperTriangular()).toBeFalsy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(0, 0), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([0, 0]), new Complex([4, 4])]
         ]).isUpperTriangular()).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
         ]).isUpperTriangular()).toBeFalsy();
     });
 
-    it ("should check if a matrix is lower triangular", () => {
+    it("should check if a matrix is lower triangular", () => {
         expect(new Matrix([
             [1, 0],
             [3, 4]
@@ -170,17 +170,17 @@ describe("Matrix Types", () => {
         ]).isLowerTriangular()).toBeFalsy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(0, 0)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([0, 0])],
+            [new Complex([3, 3]), new Complex([4, 4])]
         ]).isLowerTriangular()).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(2, 2)],
-            [Complex.fromCartesian(3, 3), Complex.fromCartesian(4, 4)]
+            [new Complex([1, 1]), new Complex([2, 2])],
+            [new Complex([3, 3]), new Complex([4, 4])]
         ]).isLowerTriangular()).toBeFalsy();
     });
 
-    it ("should check if a matrix is an identity matrix", () => {
+    it("should check if a matrix is an identity matrix", () => {
         expect(new Matrix([
             [1, 0],
             [0, 1]
@@ -192,17 +192,17 @@ describe("Matrix Types", () => {
         ]).isIdentity()).toBeFalsy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 0), Complex.fromCartesian(0, 0)],
-            [Complex.fromCartesian(0, 0), Complex.fromCartesian(1, 0)]
+            [new Complex([1, 0]), new Complex([0, 0])],
+            [new Complex([0, 0]), new Complex([1, 0])]
         ]).isIdentity()).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 0), Complex.fromCartesian(0, 0)],
-            [Complex.fromCartesian(0, 0), Complex.fromCartesian(1, 1)]
+            [new Complex([1, 0]), new Complex([0, 0])],
+            [new Complex([0, 0]), new Complex([1, 1])]
         ]).isIdentity()).toBeFalsy();
     });
 
-    it ("should check if a matrix is invertible", () => {
+    it("should check if a matrix is invertible", () => {
         expect(new Matrix([
             [1, 0],
             [0, 1]
@@ -219,17 +219,17 @@ describe("Matrix Types", () => {
         ]).isInvertible()).toBeFalsy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(1, 1), Complex.fromCartesian(0, 0)],
-            [Complex.fromCartesian(0, 0), Complex.fromCartesian(1, 1)]
+            [new Complex([1, 1]), new Complex([0, 0])],
+            [new Complex([0, 0]), new Complex([1, 1])]
         ]).isInvertible()).toBeTruthy();
 
         expect(new Matrix([
-            [Complex.fromCartesian(0, 1), Complex.fromCartesian(0, 0)],
-            [Complex.fromCartesian(0, 0), Complex.fromCartesian(0, 0)]
+            [new Complex([0, 1]), new Complex([0, 0])],
+            [new Complex([0, 0]), new Complex([0, 0])]
         ]).isInvertible()).toBeFalsy();
     });
 
-    it ("should check if a matrix is normal", () => {
+    it("should check if a matrix is normal", () => {
         expect(new Matrix([
             [1, 2],
             [3, 4]

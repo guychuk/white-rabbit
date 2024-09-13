@@ -9,22 +9,22 @@ describe('Polynomial', () => {
     it('should create a Polynomial from an array of coefficients', () => {
         const coefficients: [number, Scalar][] = [[0, 1], [1, 2], [2, 3]];
         const polynomial = Polynomial.fromArray(coefficients);
-        expect(polynomial.toString()).toBe('(3 + 0i)x^2 + (2 + 0i)x + (1 + 0i)');
+        expect(polynomial.toString()).toBe('3x^2 + 2x + 1');
     });
 
     // Creating a Polynomial from a map of coefficients
     it('should create a Polynomial from a map of coefficients', () => {
         const coefficients = new Map([[0, 1], [1, 2], [2, 3]]);
         const polynomial = Polynomial.fromMap(coefficients);
-        expect(polynomial.toString()).toBe('(3 + 0i)x^2 + (2 + 0i)x + (1 + 0i)');
+        expect(polynomial.toString()).toBe('3x^2 + 2x + 1');
     });
 
     // Adding two Polynomials
     it('should add two Polynomials correctly', () => {
-        const poly1 = Polynomial.fromArray([[0, 1], [1, 2]]);
+        const poly1 = Polynomial.fromArray([[0, new Complex([1, 1])], [1, 2]]);
         const poly2 = Polynomial.fromArray([[0, 3], [1, 4]]);
         const result = poly1.add(poly2);
-        expect(result.toString()).toBe('(6 + 0i)x + (4 + 0i)');
+        expect(result.toString()).toBe('6x + (4 + i)');
     });
 
     // Subtracting one Polynomial from another
@@ -32,7 +32,7 @@ describe('Polynomial', () => {
         const poly1 = Polynomial.fromArray([[0, 5], [1, 7]]);
         const poly2 = Polynomial.fromArray([[0, 3], [1, 4]]);
         const result = poly1.subtract(poly2);
-        expect(result.toString()).toBe('(3 + 0i)x + (2 + 0i)');
+        expect(result.toString()).toBe('3x + 2');
     });
 
     // Multiplying two Polynomials
@@ -40,7 +40,7 @@ describe('Polynomial', () => {
         const poly1 = Polynomial.fromArray([[0, 1], [1, 2]]);
         const poly2 = Polynomial.fromArray([[0, 3], [1, 4]]);
         const result = poly1.multiply(poly2);
-        expect(result.toString()).toBe("(8 + 0i)x^2 + (10 + 0i)x + (3 + 0i)");
+        expect(result.toString()).toBe("8x^2 + 10x + 3");
     });
 
     // Dividing one Polynomial by another
@@ -48,7 +48,7 @@ describe('Polynomial', () => {
         const poly1 = Polynomial.fromArray([[2, 1]]);
         const poly2 = Polynomial.fromArray([[1, 1]]);
         const result = poly1.divide(poly2);
-        expect(result.toString()).toBe('(1 + 0i)x');
+        expect(result.toString()).toBe('x');
     });
 
     // Dividing two Polynomials with different degrees
@@ -56,7 +56,7 @@ describe('Polynomial', () => {
         const poly1 = Polynomial.fromArray([[0, 1], [1, 1], [2, 1]]);
         const poly2 = Polynomial.fromArray([[0, 1], [1, 2]]);
         const result = poly1.divide(poly2, false);
-        expect(result.toString()).toBe('(0.5 + 0i)x + (0.25 + 0i)');
+        expect(result.toString()).toBe('0.5x + 0.25');
     });
 
     // Creating a Polynomial with all zero coefficients
@@ -72,7 +72,7 @@ describe('Polynomial', () => {
         const poly1 = Polynomial.fromArray([[0, 1], [1, 2]]);
         const zeroPoly = Polynomial.fromArray([[0, 0]]);
         const result = poly1.add(zeroPoly);
-        expect(result.toString()).toBe('(2 + 0i)x + (1 + 0i)');
+        expect(result.toString()).toBe('2x + 1');
     });
 
     // Subtracting a zero Polynomial from another Polynomial
@@ -80,7 +80,7 @@ describe('Polynomial', () => {
         const poly1 = Polynomial.fromArray([[0, 1], [1, 2]]);
         const zeroPoly = Polynomial.fromArray([[0, 0]]);
         const result = poly1.subtract(zeroPoly);
-        expect(result.toString()).toBe('(2 + 0i)x + (1 + 0i)');
+        expect(result.toString()).toBe('2x + 1');
     });
 
     // Multiplying a Polynomial by a zero Polynomial
@@ -103,7 +103,7 @@ describe('Polynomial', () => {
     it('should return the constant term when substituting zero into a Polynomial', () => {
         const poly = Polynomial.fromArray([[0, 5], [1, 7]]);
         const result = poly.substitute(Complex.zero);
-        expect(result.equals(Complex.fromCartesian(5, 0))).toBe(true);
+        expect(result.equals(new Complex([5, 0]))).toBe(true);
     });
 
     // Substituting a value into a Polynomial
@@ -112,7 +112,7 @@ describe('Polynomial', () => {
         const polynomial = Polynomial.fromArray(coefficients);
         const value = 2;
         const result = polynomial.substitute(value, false);
-        expect(result.toString()).toBe('17 + 0i');
+        expect(result.toString()).toBe('17');
     });
 
     // Calculating the degree of a Polynomial
@@ -135,13 +135,13 @@ describe('Polynomial', () => {
     });
 
     it ("should find the roots of a complex polynomial", () => {
-        const p = Polynomial.makeLinearMonic(1).multiply(Polynomial.makeLinearMonic(Complex.fromCartesian(1, 1))).multiply(Polynomial.makeLinearMonic(1));
+        const p = Polynomial.makeLinearMonic(1).multiply(Polynomial.makeLinearMonic(new Complex([1, 1]))).multiply(Polynomial.makeLinearMonic(1));
 
         const roots = p.findRoots();
 
         expect(roots.length).toBe(3);
 
         expect(roots.findIndex(i => i.equals(1))).not.toBe(-1);
-        expect(roots.findIndex(i => i.equals(Complex.fromCartesian(1, 1)))).not.toBe(-1);
+        expect(roots.findIndex(i => i.equals(new Complex([1, 1])))).not.toBe(-1);
     });
 });

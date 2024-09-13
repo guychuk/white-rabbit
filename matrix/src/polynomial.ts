@@ -42,7 +42,7 @@ export class Polynomial {
         const result = Polynomial.fromMap(this.polynomial);
 
         for (const [power, coefficient] of other.polynomial.entries()) {
-            const currentCoefficient = result.polynomial.get(power) || Complex.fromCartesian(0, 0);
+            const currentCoefficient = result.polynomial.get(power) || Complex.zero;
             const newCoefficient = currentCoefficient.add(coefficient);
 
             if (!newCoefficient.equals(0)) {
@@ -63,7 +63,7 @@ export class Polynomial {
         const result = Polynomial.fromMap(this.polynomial);
 
         for (const [power, coefficient] of other.polynomial.entries()) {
-            const currentCoefficient = result.polynomial.get(power) || Complex.fromCartesian(0, 0);
+            const currentCoefficient = result.polynomial.get(power) || Complex.zero;
             const newCoefficient = currentCoefficient.subtract(coefficient);
 
             if (!newCoefficient.equals(0)) {
@@ -86,7 +86,7 @@ export class Polynomial {
         for (const [power1, coefficient1] of this.polynomial.entries()) {
             for (const [power2, coefficient2] of other.polynomial.entries()) {
                 const power = power1 + power2;
-                const currentCoefficient = result.polynomial.get(power) || Complex.fromCartesian(0, 0);
+                const currentCoefficient = result.polynomial.get(power) || Complex.zero;
                 const newCoefficient = currentCoefficient.add(coefficient1.multiply(coefficient2, usePolar));
 
                 if (!newCoefficient.equals(0)) {
@@ -197,12 +197,12 @@ export class Polynomial {
         } while (n > 1 && !closeEnough && --iterations);
 
         if (n > 1){
-            return roots.concat(guesses).map(guess => guess.toRound(round));
+            return roots.concat(guesses).map(guess => guess.toFixed(round));
         } else if (n === 1){
-            return roots.concat([current.polynomial.get(0)!.multiply(-1, usePolar)]).map(guess => guess.toRound(round));
+            return roots.concat([current.polynomial.get(0)!.multiply(-1, usePolar)]).map(guess => guess.toFixed(round));
         }
 
-        return roots.map(guess => guess.toRound(round));
+        return roots.map(guess => guess.toFixed(round));
     }
 
     static makeLinearMonic(x: Scalar, usePolar: boolean = true) { 
@@ -218,19 +218,83 @@ export class Polynomial {
     }
 
     toString(): string {
-        const result = Array.from(this.polynomial.keys()).sort((a, b) => b - a)
-            .map((key) => {
-                const value = this.polynomial.get(key)!;
+        if (this.isZero()){
+            return '0';
+        }
 
-                if (key === 0) {
-                    return `(${value.toString()})`;
-                } else if (key === 1) {
-                    return `(${value.toString()})x`;
-                } // else
+        // not zero! so we can safely assume that the degree is at least 0
 
-                return `(${value.toString()})x^${key}`;
-            }).join(' + ');
+        const sortedPowers = Array.from(this.polynomial.keys()).sort((a, b) => b - a);
 
-        return result === '' ? '0' : result;
+        // first term
+
+        var result: string = "";
+
+        const firstCoefficient = this.polynomial.get(sortedPowers[0])!;
+
+        if (firstCoefficient.equals(1)){
+            if (sortedPowers[0] === 0){
+                result += '1';
+            }
+        } else if (firstCoefficient.equals(-1)){
+            if (sortedPowers[0] === 0){
+                result += '-1';
+            } else {
+                result += '-';
+            }
+        } else {
+            result += firstCoefficient.toString();
+        }
+
+        if (sortedPowers[0] === 1){
+            result += 'x';
+        } else if (sortedPowers[0] > 1){
+            result += 'x^' + sortedPowers[0];
+        }
+
+        // other terms
+
+        for (const power of sortedPowers.slice(1)){
+            const coefficient = this.polynomial.get(power)!;
+
+            if (coefficient.equals(1)){
+                if (power === 0){
+                    result += ' + 1';
+                } else {
+                    result += ' + ';
+                }
+            } else if (coefficient.equals(-1)){
+                if (power === 0){
+                    result += ' - 1';
+                } else {
+                    result += ' - ';
+                }
+            }
+            else {
+                if (coefficient.isReal()){
+                    if (coefficient.real > 0){
+                        result += ' + ' + coefficient.toString();
+                    } else {
+                        result += ' - ' + coefficient.toString().substring(1);
+                    }
+                } else if (coefficient.isPureImaginary()){
+                    if (coefficient.imaginary > 0){
+                        result += ' + ' + coefficient.toString();
+                    } else {
+                        result += ' - ' + coefficient.toString().substring(1);
+                    }
+                } else {  
+                    result += ` + (${coefficient.toString()})`; 
+                }
+            }
+
+            if (power === 1){
+                result += 'x';
+            } else if (power > 1){
+                result += 'x^' + power;
+            }
+        }
+
+        return result;
     }
 }

@@ -17,11 +17,7 @@ describe ("Linear System", () => {
         expect(x.length).toBe(1);
 
         expect(x[0][0]).toBe(0);
-
-        expect(x[0][1].length).toBe(2);
-
-        expect(x[0][1][0].equals(0)).toBeTruthy();
-        expect(x[0][1][1].equals(1)).toBeTruthy();
+        expect(x[0][1].equals(new Matrix([[0], [1]])));
     });
 
     it ("should solve a 3x3 linear system", () => {
@@ -42,12 +38,7 @@ describe ("Linear System", () => {
         expect(x.length).toBe(1);
 
         expect(x[0][0]).toBe(0);
-
-        expect(x[0][1].length).toBe(3);
-
-        expect(x[0][1][0].equals(0)).toBeTruthy();
-        expect(x[0][1][1].equals(1)).toBeTruthy();
-        expect(x[0][1][2].equals(0)).toBeTruthy();
+        expect(x[0][1].equals(new Matrix([[0], [1], [0]])));
     });
 
     it ("should return empty when trying to solve an unsolvable linear system", () => {
@@ -78,13 +69,10 @@ describe ("Linear System", () => {
         expect(x.length).toBe(2);
 
         expect(x[0][0]).toBe(0);
+        expect(x[0][1].equals(new Matrix([[1], [0]])));
 
-        expect(x[0][1].length).toBe(2);
-        expect(x[0][1][0].equals(1)).toBeTruthy();
-        expect(x[0][1][1].equals(0)).toBeTruthy();
 
-        expect(x[1][1].length).toBe(2);
-        expect(x[1][1][0].equals(-1)).toBeTruthy();
-        expect(x[1][1][1].equals(1)).toBeTruthy();
+        expect(x[1][0]).toBe(2);
+        expect(x[1][1].equals(new Matrix([[-1], [1]])));
     });
 });

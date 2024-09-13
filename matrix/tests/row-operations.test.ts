@@ -124,7 +124,7 @@ describe("Row Operations using RowOperation Type", () => {
     });
 });
 
-describe("Guassian Elimination", () => {
+describe("Gaussian Elimination", () => {
     it ("should perform Gaussian Elimination", () => {
         const m1 = new Matrix([
             [1, 2, 3],
