@@ -9,4 +9,4 @@ It is also a great song! [#🛩️](https://www.youtube.com/watch?v=pnJM_jC7j_4)
 ## 🔎 What You'll Find Here?
 So far, I've got  
 - 🤖 _automata-simulator_: **DFA** (Deterministic Finite Automata) and **NFA** (Nondeterministic Finite Automata) **Simulator** - ability to create and check if words are accepted (programmatically), a page where you can *draw a DFA or an NFA* or *generate a random one*, and also ***run simulations***!
-- 🔢 _matrix-calculator_: a **Matrix Calculator** - can perform matrix addition, subtraction, multiplication, etc. You can also calculate a matrix' inverse, transpose, conjugate transpose, check what type of matrix is it (hermitian? symmetric? diagonal?), diagonalize a matrix and solve a system of linear equations. <br> _**In the future** - SVD._
+- 🔢 _matrix-calculator_: a **Matrix Calculator** - can perform matrix addition, subtraction, multiplication, etc. You can also calculate a matrix' inverse, transpose, conjugate transpose, check what type of matrix is it (hermitian? symmetric? diagonal?), diagonalize a matrix and solve a system of linear equations.

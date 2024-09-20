@@ -140,11 +140,11 @@ export class Polynomial {
      * Finds the roots of this polynomial, using the Durand-Kerner method.
      * @param usePolar Whether to use the polar form to calculate the roots. Default is true.
      * @param [round=3] How many digits after the decimal point should be considered.
-     * @param e The maximum error allowed. Default is e-9.
+     * @param p The precision, 9 decimal points by default.
      * @param iterations The maximum number of iterations allowed. Default is 100.
      * @returns An array of complex numbers that are the roots of this polynomial.
      */
-    findRoots(usePolar: boolean = true, round: number = 3, e: number = 9, iterations: number = 100) : Complex[] {
+    findRoots(usePolar: boolean = true, round: number = 3, p: number = 9, iterations: number = 100) : Complex[] {
         var n: number = this.degree();
 
         // base cases
@@ -190,7 +190,7 @@ export class Polynomial {
                             guesses.reduce((denominator, curr, j) => 
                                 i !== j ? denominator.multiply(guess.subtract(curr), usePolar) : denominator, Complex.one), usePolar)));
                 
-                closeEnough = nextGuesses.every((guess, i) => guess.equals(guesses[i], e));
+                closeEnough = nextGuesses.every((guess, i) => guess.equals(guesses[i], p));
 
                 guesses = nextGuesses;
             }

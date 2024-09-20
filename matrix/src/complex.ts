@@ -209,7 +209,7 @@ export class Complex {
         const otherComplex = Complex.fromScalar(other);
         
         return roundNum(this.real, p) === roundNum(otherComplex.real, p) && 
-        roundNum(this.imaginary, p) === roundNum(otherComplex.imaginary, p);
+            roundNum(this.imaginary, p) === roundNum(otherComplex.imaginary, p);
     }
 
     // properties
@@ -228,9 +228,9 @@ export class Complex {
 
     // others
 
-    toString() : string {
+    toString(p: number = comparisonPrecision) : string {
         if (this.isReal()){
-            return this.real.toString();
+            return roundNum(this.real, p).toString();
         }
 
         if (this.isPureImaginary()){
@@ -239,19 +239,19 @@ export class Complex {
             if (this.equals(Complex.negi))
                 return '-i'
 
-            return `${this.imaginary}i`;
+            return `${roundNum(this.imaginary, p)}i`;
         }
 
         if (roundNum(this.imaginary, comparisonPrecision) === 1){
-            return `${this.real} + i`;
+            return `${roundNum(this.real, p)} + i`;
         } else if (roundNum(this.imaginary, comparisonPrecision) === -1){
-            return `${this.real} - i`;
+            return `${roundNum(this.real, p)} - i`;
         }
 
         if (this.imaginary < 0)
-            return `${this.real} - ${-this.imaginary}i`
+            return `${roundNum(this.real, p)} - ${roundNum(-this.imaginary, p)}i`
 
-        return `${this.real} + ${-this.imaginary}i`
+        return `${roundNum(this.real, p)} + ${roundNum(this.imaginary, p)}i`
     }
 
     /**
@@ -261,5 +261,9 @@ export class Complex {
      */
     toFixed(digits: number = comparisonPrecision) : Complex {
         return new Complex([roundNum(this._real, digits), roundNum(this._imag, digits)]);
+    }
+
+    copy() : Complex {
+        return new Complex([this.real, this.imaginary]);
     }
 }
